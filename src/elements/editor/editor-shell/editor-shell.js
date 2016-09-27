@@ -2,31 +2,36 @@ Polymer({
   is: 'editor-shell',
 
   properties: {
-    loading: {
-      type: String,
+    dependenciesLoading: {
+      type: Boolean,
       value: true,
-      reflectToAttribute: true,
-      observer: '_loadingObserver'
+      observer: '_dependencyObserver'
+    },
+
+    sceneLoading: {
+      type: Boolean,
+      value: true,
+      observer: '_sceneObserver'
+    },
+
+    loading: {
+      type: Boolean,
+      value: true,
+      reflectToAttribute: true
     },
 
     selectedMaterial: {
       type: Object,
       notify: true
-    },
-
-    material: {
-      type: Object,
-      observer: '_materialObserver'
     }
   },
 
   scenePath: '/src/elements/editor/editor-scene/editor-scene.html',
 
-  _loadingObserver: function() {
-    if (!this.loading) {
+  _dependencyObserver: function() {
+    if (!this.dependenciesLoading) {
       this.importHref(this.scenePath, function() {
-        this.loading = false;
-        console.log('scene init');
+        this.sceneLoading = false;
       },
       function() {
         console.log('error');
@@ -34,15 +39,14 @@ Polymer({
     }
   },
 
-  _materialObserver: function() {
-    if (this.material) {
-      console.log(this.material);
+  _sceneObserver: function() {
+    if (!this.sceneLoading) {
+      this.loading = false;
     }
   },
 
   _onMaterialListLoaded: function(response) {
     this.materialList = response.detail.response;
-    console.log(this.materialList);
   }
 
 });

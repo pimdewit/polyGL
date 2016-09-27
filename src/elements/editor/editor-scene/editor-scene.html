@@ -25,6 +25,7 @@
   </style>
   <template>
     <canvas id="canvas" class="canvas" on-mousemove="_touchHandler" on-touchmove="_touchHandler"></canvas>
+    <h1>{{material}}</h1>
   </template>
 
   <script>
@@ -32,6 +33,18 @@
       is: 'editor-scene',
 
       properties: {
+        loading: {
+          type: Boolean,
+          value: true,
+          reflectToAttribute: true,
+          observer: '_stateObserver'
+        },
+
+        material: {
+          type: Object,
+          observer: '_materialObserver'
+        },
+
         _textureLoader: Object,
         _camera: Object,
         _scene: Object,
@@ -40,12 +53,12 @@
         texture: Object,
 
         uniforms: Object,
-        u_resolution: Object,
         u_texture: Object,
         u_time: {
           type: Number,
           value: 0.0
         },
+
         u_cursor: {
           type: Object,
           value: [
@@ -54,19 +67,75 @@
               y: 0.5
             }
           ]
+        },
+
+        u_resolution: {
+          type: Object,
+          value: [
+            {
+              x: 0,
+              y: 0
+            }
+          ]
         }
       },
 
-      _textureLoader: new THREE.TextureLoader(),
+      _stateObserver: function() {
+        if (!this.loading) {
+          this._createSceneComponents();
+          this._setComponentConfig();
 
-      attached: function() {
-        this._debounce = this.debounce.bind(this);
-        this._setConfig();
-        this._addEventListeners();
+          // Do we have a texture?
+          this.texture ? this._loadImage() : this._createScene();
+
+          this._addEventListeners();
+        }
       },
 
-      detached: function() {
-        this.destroy();
+      _materialObserver: function() {
+        console.log(this.material);
+      },
+
+      /**
+       * Scene.
+       */
+      _createSceneComponents: function() {
+        this._renderer = new THREE.WebGLRenderer({canvas: this.$.canvas});
+        this._textureLoader = new THREE.TextureLoader();
+        this._scene = new THREE.Scene();
+        this._camera = new THREE.Camera();
+      },
+
+
+      _createScene: function() {
+        var geometry = new THREE.PlaneBufferGeometry(2, 2);
+        var material = new THREE.MeshLambertMaterial({color: 0x55B663});
+
+        this.mesh = new THREE.Mesh(geometry, material);
+
+        this._scene.add(this.mesh);
+
+        this._animate();
+      },
+
+      _setComponentConfig: function() {
+        this._textureLoader.minFilter = THREE.LinearFilter;
+
+        this._camera.position.z = 1;
+
+        this._renderer.setPixelRatio(window.devicePixelRatio);
+      },
+
+      /**
+       * Render.
+       */
+      _animate: function() {
+        requestAnimationFrame(this._animate.bind(this))
+        this._render();
+      },
+
+      _render: function() {
+        this._renderer.render(this._scene, this._camera);
       },
 
       /**
@@ -83,16 +152,21 @@
       _touchHandler: function(event) {
         this.u_cursor.x = event.offsetX;
         this.u_cursor.y = event.offsetY;
-
-        console.log(this.u_cursor);
       },
 
       _onResize: function() {
-        console.log(this.offsetWidth, this.offsetHeight);
+        this.u_resolution.x = this.offsetWidth;
+        this.u_resolution.y = this.offsetHeight;
+
+        this._resizeRenderer(this.u_resolution.x, this.u_resolution.y);
       },
 
-      _setConfig: function() {
-        this._textureLoader.minFilter = THREE.LinearFilter;
+      _resizeRenderer: function(width, height) {
+        this._renderer.setSize(width, height);
+      },
+
+      detached: function() {
+        this._destroy();
       },
 
       _destroy: function() {

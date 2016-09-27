@@ -22,9 +22,8 @@
         debounce-duration="300">
     </iron-ajax>
 
-    <editor-dependencies id="dependencies" loading="{{loading}}"></editor-dependencies>
-    <editor-loader loading="{{loading}}"></editor-loader>
-    <editor-scene material="[[material]]"></editor-scene>
+    <editor-dependencies id="dependencies" loading="{{dependenciesLoading}}"></editor-dependencies>
+    <editor-scene material="[[material]]" loading="{{sceneLoading}}"></editor-scene>
 
     <div class="materials">
       <!-- Loop through the main list -->
@@ -40,6 +39,7 @@
       </template>
     </div>
 
+    <editor-loader loading="{{loading}}"></editor-loader>
   </template>
 
   <script src="editor-shell.js"></script>
