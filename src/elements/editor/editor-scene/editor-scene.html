@@ -1,8 +1,30 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 
 <dom-module id="editor-scene">
+  <style>
+    :host {
+      display: flex;
+      position: relative;
+
+      width: 100%;
+      height: calc(100vh - 64px);
+
+      align-items: center;
+      justify-content: center;
+    }
+
+    .canvas {
+      position: absolute;
+      width: 80%;
+      height: 80%;
+      top: 10%;
+      left: 10%;
+
+      box-shadow: 0 0 0 5px #e2e3e4;
+    }
+  </style>
   <template>
-    <canvas id="canvas" on-mousemove="_touchHandler" on-touchmove="_touchHandler" style="border: 1px solid red;"></canvas>
+    <canvas id="canvas" class="canvas" on-mousemove="_touchHandler" on-touchmove="_touchHandler"></canvas>
   </template>
 
   <script>
@@ -17,13 +39,14 @@
 
         texture: Object,
 
+        uniforms: Object,
         u_resolution: Object,
         u_texture: Object,
         u_time: {
           type: Number,
           value: 0.0
         },
-        u_mouse: {
+        u_cursor: {
           type: Object,
           value: [
             {
@@ -32,24 +55,48 @@
             }
           ]
         }
-
       },
 
       _textureLoader: new THREE.TextureLoader(),
 
       attached: function() {
+        this._debounce = this.debounce.bind(this);
         this._setConfig();
+        this._addEventListeners();
+      },
+
+      detached: function() {
+        this.destroy();
+      },
+
+      /**
+       * Event Listeners.
+       */
+      _addEventListeners: function() {
+        this._resizeHandler = this._onResize.bind(this);
+        window.addEventListener('resize', this._resizeHandler);
       },
 
       /**
        * Event Handlers.
       */
       _touchHandler: function(event) {
-        console.log(event.offsetX, event.offsetY);
+        this.u_cursor.x = event.offsetX;
+        this.u_cursor.y = event.offsetY;
+
+        console.log(this.u_cursor);
+      },
+
+      _onResize: function() {
+        console.log(this.offsetWidth, this.offsetHeight);
       },
 
       _setConfig: function() {
         this._textureLoader.minFilter = THREE.LinearFilter;
+      },
+
+      _destroy: function() {
+        window.removeEventListener('resize', this._resizeHandler);
       }
     });
   </script>

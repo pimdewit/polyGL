@@ -9,15 +9,11 @@
 
     <div class="page">
       <header style="height: 200vh;">
-        <h1>Header One</h1>
-        <h2><a href="">Header Two</a></h2>
-        <h3>Header Three</h3>
-
-        <p>Paragraph</p>
+        <a name="editor" href="/editor">Editor</a>
       </header>
 
       <paper-toast id="editortoast" text="New: WebGL Editor." duration="5000">
-        <a href="/about"><paper-button>Check it out!</paper-button></a>
+        <a href="/editor"><paper-button>Check it out!</paper-button></a>
       </paper-toast>
     </div>
   </template>
@@ -33,7 +29,7 @@
       },
 
       _toggleToast: function() {
-        // this.$.editortoast.toggle();
+        this.$.editortoast.toggle();
       }
     });
   </script>

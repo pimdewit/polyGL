@@ -24,9 +24,9 @@
 
     <editor-dependencies id="dependencies" loading="{{loading}}"></editor-dependencies>
     <editor-loader loading="{{loading}}"></editor-loader>
+    <editor-scene material="[[material]]"></editor-scene>
 
-
-    <div>
+    <div class="materials">
       <!-- Loop through the main list -->
       <template is="dom-repeat" items="[[materialList]]" as="categories">
         <!-- Loop through the categories -->
@@ -39,8 +39,6 @@
         </template>
       </template>
     </div>
-
-    <editor-scene material="[[material]]"></editor-scene>
 
   </template>
 
