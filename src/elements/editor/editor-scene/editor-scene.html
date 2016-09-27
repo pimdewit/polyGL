@@ -12,20 +12,9 @@
       align-items: center;
       justify-content: center;
     }
-
-    .canvas {
-      position: absolute;
-      width: 80%;
-      height: 80%;
-      top: 10%;
-      left: 10%;
-
-      box-shadow: 0 0 0 5px #e2e3e4;
-    }
   </style>
   <template>
     <canvas id="canvas" class="canvas" on-mousemove="_touchHandler" on-touchmove="_touchHandler"></canvas>
-    <h1>{{material}}</h1>
   </template>
 
   <script>
@@ -73,8 +62,8 @@
           type: Object,
           value: [
             {
-              x: 0,
-              y: 0
+              x: 0.0,
+              y: 0.0
             }
           ]
         }
@@ -86,19 +75,42 @@
           this._setComponentConfig();
 
           // Do we have a texture?
-          this.texture ? this._loadImage() : this._createScene();
+          // this.texture ? this._loadImage() : this._createScene();
 
           this._addEventListeners();
         }
       },
 
       _materialObserver: function() {
-        console.log(this.material);
+        if (this.material) {
+          this._destroy();
+
+          if (this.material.texture) {
+            var texture = this.material.texture;
+            this._loadImage(texture);
+          } else {
+            this._stateObserver();
+            this._createScene();
+          }
+        }
       },
+
 
       /**
        * Scene.
        */
+       _loadImage: function(imageurl) {
+          this.textureLoader.load(imageurl, function(texture) {
+            console.log(texture);
+            this._onTextureLoaded(texture);
+          });
+       },
+
+       _onTextureLoaded: function(texture) {
+          this.texture = texture;
+          console.log(this.texture);
+       },
+
       _createSceneComponents: function() {
         this._renderer = new THREE.WebGLRenderer({canvas: this.$.canvas});
         this._textureLoader = new THREE.TextureLoader();
@@ -108,21 +120,49 @@
 
 
       _createScene: function() {
-        var geometry = new THREE.PlaneBufferGeometry(2, 2);
-        var material = new THREE.MeshLambertMaterial({color: 0x55B663});
+        this._bundleUniforms();
 
+        var geometry = new THREE.PlaneBufferGeometry(2, 2);
+
+        // TODO!
+        var material = new THREE.ShaderMaterial({
+          uniforms: this.uniforms,
+          vertexShader: this.material.shader.vertex,
+          fragmentShader: this.material.shader.fragment
+        });
+
+        console.log(geometry, material);
         this.mesh = new THREE.Mesh(geometry, material);
+        console.log(this.mesh);
 
         this._scene.add(this.mesh);
 
+        this._onResize();
         this._animate();
+      },
+
+      _bundleUniforms: function() {
+
+        if (this.texture) {
+          this.uniforms = {
+            u_time: {value: this.u_time},
+            u_texture: {value: this.texture},
+            u_textureCoord: {value: new THREE.Vector2(this.texture.image.naturalWidth, this.texture.image.naturalHeight)},
+            u_resolution: {value: new THREE.Vector2(this.u_resolution.x, this.u_resolution.y)},
+            u_cursor: {value: new THREE.Vector2(this.u_cursor.x, this.u_cursor.y)}
+          };
+        } else {
+          this.uniforms = {
+            u_time: {value: this.u_time},
+            u_resolution: {value: new THREE.Vector2(this.u_resolution.x, this.u_resolution.y)},
+            u_cursor: {value: new THREE.Vector2(this.u_cursor.x, this.u_cursor.y)}
+          };
+        }
       },
 
       _setComponentConfig: function() {
         this._textureLoader.minFilter = THREE.LinearFilter;
-
         this._camera.position.z = 1;
-
         this._renderer.setPixelRatio(window.devicePixelRatio);
       },
 
@@ -130,7 +170,7 @@
        * Render.
        */
       _animate: function() {
-        requestAnimationFrame(this._animate.bind(this))
+        this._RAF = requestAnimationFrame(this._animate.bind(this));
         this._render();
       },
 
@@ -169,8 +209,26 @@
         this._destroy();
       },
 
+      /**
+       * Destroy Everything
+       */
       _destroy: function() {
         window.removeEventListener('resize', this._resizeHandler);
+        cancelAnimationFrame(this._RAF);
+        this.texture = null;
+        this._scene = null;
+        this._projector = null;
+        this._camera = null;
+        this._textureLoader = null;
+        this.time = 0.0;
+        this.u_mouse = {
+          x: 0.0,
+          y: 0.0
+        };
+        this.u_cursor = {
+          x: 0.0,
+          y: 0.0
+        };
       }
     });
   </script>
