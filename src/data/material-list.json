@@ -1,0 +1,26 @@
+[
+  {
+    "category": [
+      {
+        "name": "Basic",
+        "materials": [
+          {
+            "id": "red",
+            "title": "Red",
+            "description": "A vibrant red."
+          }
+        ]
+      },
+      {
+        "name": "Special",
+        "materials": [
+          {
+            "id": "yellow",
+            "title": "Yellow",
+            "description": "A summery yellow."
+          }
+        ]
+      }
+    ]
+  }
+]

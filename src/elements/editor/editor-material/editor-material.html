@@ -1,35 +1,43 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-ajax/iron-ajax.html">
 
-<dom-module id="editor-loader">
+<dom-module id="editor-material">
   <template>
     <iron-ajax
         auto
-        url="../materials/{{material-request}}.json"
+        url="/src/data/materials/{{materialProperties.id}}.json"
         handle-as="json"
         on-response="_handleResponse"
-        debounce-duration="300"></iron-ajax>
+        debounce-duration="300">
+    </iron-ajax>
+
+    <paper-button on-tap="_setMaterial">{{materialProperties.title}}</paper-button>
   </template>
 
   <script>
     Polymer({
-      is: 'editor-loader',
+      is: 'editor-material',
 
       properties: {
-        loading: {
-          type: Boolean,
-          notify: true,
-          value: true,
-          reflectToAttribute: true,
-          observer: '_loadingStateObserver'
+        _storeMaterial: {
+          type: Object
+        },
+
+        material: {
+          type: Object,
+          notify: true
         }
       },
 
       _handleResponse: function(response) {
-        console.log('material loaded');
-        this.material = response.detail.response;
+        this._storeMaterial = response.detail.response;
+      },
+
+      _setMaterial: function() {
+        if (this._storeMaterial) {
+          this.material = this._storeMaterial;
+        }
       }
-
-
     });
   </script>
 </dom-module>

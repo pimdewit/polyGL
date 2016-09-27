@@ -1,8 +1,11 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../shared-styles.html">
 
-<link rel="import" href="../../editor/editor-loader/editor-loader.html">
-<link rel="import" href="../../editor/editor-dependencies/editor-dependencies.html">
+<link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="../editor-loader/editor-loader.html">
+<link rel="import" href="../editor-dependencies/editor-dependencies.html">
+<link rel="import" href="../editor-material/editor-material.html">
 
 <link rel="import" href="editor-shell-styles.html">
 
@@ -10,11 +13,33 @@
   <template>
     <style include="shared-styles"></style>
     <style include="editor-shell-styles"></style>
-    
+
+    <iron-ajax
+        auto
+        url="/src/data/material-list.json"
+        handle-as="json"
+        on-response="_onMaterialListLoaded"
+        debounce-duration="300">
+    </iron-ajax>
+
     <editor-dependencies id="dependencies" loading="{{loading}}"></editor-dependencies>
     <editor-loader loading="{{loading}}"></editor-loader>
-    <!-- TODO: Iron-select a material and get the chosen material back as selectedMaterial -->
-    <editor-material selected-material="{{selected-material}}"></editor-material>
+
+
+    <div>
+      <template is="dom-repeat" items="[[materialList]]" as="categories">
+        <template is="dom-repeat" items="[[categories.category]]" as="category">
+          <h3>{{category.name}}</h3>
+
+          <template is="dom-repeat" items="[[category.materials]]">
+            <editor-material material-properties="{{item}}" material="{{material}}"></editor-material>
+          </template>
+
+        </template>
+      </template>
+    </div>
+
+    <editor-scene material="[[material]]"></editor-scene>
 
   </template>
 

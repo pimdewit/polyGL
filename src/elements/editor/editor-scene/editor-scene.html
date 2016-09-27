@@ -1,0 +1,23 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="editor-scene">
+  <template>
+    <canvas id="canvas" on-mousemove="_touchHandler" on-touchmove="_touchHandler"></canvas>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'editor-scene',
+
+      properties: {
+      },
+
+      /**
+       * Event Handlers.
+      */
+      _touchHandler: function(event) {
+        console.log(event.offsetX, event.offsetY);
+      }
+    });
+  </script>
+</dom-module>

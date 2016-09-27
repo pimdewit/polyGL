@@ -1,0 +1,7 @@
+{
+  "name": "Yellow",
+  "uniforms": {
+    "texture": "/src/assets/editor/textures/red.png"
+  },
+  "price": "25"
+}
