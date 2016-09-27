@@ -27,14 +27,15 @@
 
 
     <div>
+      <!-- Loop through the main list -->
       <template is="dom-repeat" items="[[materialList]]" as="categories">
+        <!-- Loop through the categories -->
         <template is="dom-repeat" items="[[categories.category]]" as="category">
           <h3>{{category.name}}</h3>
-
+          <!-- Loop trhough the materials -->
           <template is="dom-repeat" items="[[category.materials]]">
             <editor-material material-properties="{{item}}" material="{{material}}"></editor-material>
           </template>
-
         </template>
       </template>
     </div>

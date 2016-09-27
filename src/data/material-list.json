@@ -8,6 +8,11 @@
             "id": "red",
             "title": "Red",
             "description": "A vibrant red."
+          },
+          {
+            "id": "yellow",
+            "title": "Blue",
+            "description": "Navy blue."
           }
         ]
       },

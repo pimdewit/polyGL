@@ -2,7 +2,7 @@
 
 <dom-module id="editor-scene">
   <template>
-    <canvas id="canvas" on-mousemove="_touchHandler" on-touchmove="_touchHandler"></canvas>
+    <canvas id="canvas" on-mousemove="_touchHandler" on-touchmove="_touchHandler" style="border: 1px solid red;"></canvas>
   </template>
 
   <script>
@@ -10,6 +10,35 @@
       is: 'editor-scene',
 
       properties: {
+        _textureLoader: Object,
+        _camera: Object,
+        _scene: Object,
+        _renderer: Object,
+
+        texture: Object,
+
+        u_resolution: Object,
+        u_texture: Object,
+        u_time: {
+          type: Number,
+          value: 0.0
+        },
+        u_mouse: {
+          type: Object,
+          value: [
+            {
+              x: 0.5,
+              y: 0.5
+            }
+          ]
+        }
+
+      },
+
+      _textureLoader: new THREE.TextureLoader(),
+
+      attached: function() {
+        this._setConfig();
       },
 
       /**
@@ -17,6 +46,10 @@
       */
       _touchHandler: function(event) {
         console.log(event.offsetX, event.offsetY);
+      },
+
+      _setConfig: function() {
+        this._textureLoader.minFilter = THREE.LinearFilter;
       }
     });
   </script>
