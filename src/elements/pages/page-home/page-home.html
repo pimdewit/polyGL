@@ -1,0 +1,40 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../shared-styles.html">
+
+<dom-module id="page-home">
+  <template>
+    <style include="shared-styles"></style>
+
+    <div class="page">
+      <header style="height: 200vh;">
+        <h1>Header One</h1>
+        <h2><a href="">Header Two</a></h2>
+        <h3>Header Three</h3>
+
+        <p>Paragraph</p>
+      </header>
+
+      <paper-toast id="editortoast" text="New: WebGL Editor." duration="5000">
+        <a href="/about"><paper-button>Check it out!</paper-button></a>
+      </paper-toast>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'page-home',
+
+      attached: function() {
+        this.async(function() {
+          this._toggleToast();
+        }, 3000);
+      },
+
+      _toggleToast: function() {
+        // this.$.editortoast.toggle();
+      }
+    });
+  </script>
+</dom-module>

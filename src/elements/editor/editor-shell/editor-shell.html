@@ -1,0 +1,22 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../shared-styles.html">
+
+<link rel="import" href="../../editor/editor-loader/editor-loader.html">
+<link rel="import" href="../../editor/editor-dependencies/editor-dependencies.html">
+
+<link rel="import" href="editor-shell-styles.html">
+
+<dom-module id="editor-shell">
+  <template>
+    <style include="shared-styles"></style>
+    <style include="editor-shell-styles"></style>
+    
+    <editor-dependencies id="dependencies" loading="{{loading}}"></editor-dependencies>
+    <editor-loader loading="{{loading}}"></editor-loader>
+    <!-- TODO: Iron-select a material and get the chosen material back as selectedMaterial -->
+    <editor-material selected-material="{{selected-material}}"></editor-material>
+
+  </template>
+
+  <script src="editor-shell.js"></script>
+</dom-module>

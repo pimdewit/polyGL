@@ -1,0 +1,30 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="editor-dependencies">
+  <template>
+    <script src="../../../../bower_components/three.js/build/three.js" on-load="_loadHandler"></script>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'editor-dependencies',
+
+      properties: {
+        loading: {
+          type: String,
+          notify: true,
+        },
+
+        loaded: {
+          type: String,
+          reflectToAttribute: true
+        }
+      },
+
+      _loadHandler: function() {
+        this.loading = false;
+        this.loaded = true;
+      }
+    });
+  </script>
+</dom-module>
