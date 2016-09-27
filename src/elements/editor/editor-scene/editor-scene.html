@@ -71,45 +71,46 @@
 
       _stateObserver: function() {
         if (!this.loading) {
-          this._createSceneComponents();
-          this._setComponentConfig();
-
-          // Do we have a texture?
-          // this.texture ? this._loadImage() : this._createScene();
-
-          this._addEventListeners();
+          this._init();
         }
       },
 
       _materialObserver: function() {
         if (this.material) {
+          // Destroy the scene
           this._destroy();
+
+          // Create a new scene
+          this._init();
 
           if (this.material.texture) {
             var texture = this.material.texture;
             this._loadImage(texture);
           } else {
-            this._stateObserver();
             this._createScene();
           }
         }
       },
 
-
       /**
        * Scene.
        */
-       _loadImage: function(imageurl) {
-          this.textureLoader.load(imageurl, function(texture) {
-            console.log(texture);
-            this._onTextureLoaded(texture);
-          });
+      _init: function() {
+        this._createSceneComponents();
+        this._setComponentConfig();
+        this._addEventListeners();
+      },
+
+      _loadImage: function(imageurl) {
+        this._textureLoader.load(imageurl, function(texture) {
+          this._onTextureLoaded(texture);
+        }.bind(this));
        },
 
-       _onTextureLoaded: function(texture) {
-          this.texture = texture;
-          console.log(this.texture);
-       },
+      _onTextureLoaded: function(texture) {
+        this.texture = texture;
+        this._createScene();
+      },
 
       _createSceneComponents: function() {
         this._renderer = new THREE.WebGLRenderer({canvas: this.$.canvas});
@@ -117,7 +118,6 @@
         this._scene = new THREE.Scene();
         this._camera = new THREE.Camera();
       },
-
 
       _createScene: function() {
         this._bundleUniforms();
@@ -131,9 +131,7 @@
           fragmentShader: this.material.shader.fragment
         });
 
-        console.log(geometry, material);
         this.mesh = new THREE.Mesh(geometry, material);
-        console.log(this.mesh);
 
         this._scene.add(this.mesh);
 
@@ -213,6 +211,7 @@
        * Destroy Everything
        */
       _destroy: function() {
+        console.warn('Destroying Scene');
         window.removeEventListener('resize', this._resizeHandler);
         cancelAnimationFrame(this._RAF);
         this.texture = null;
@@ -229,6 +228,7 @@
           x: 0.0,
           y: 0.0
         };
+        console.warn('Scene destroyed');
       }
     });
   </script>
