@@ -1,0 +1,35 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="editor-loader">
+  <template>
+    <iron-ajax
+        auto
+        url="../materials/{{material-request}}.json"
+        handle-as="json"
+        on-response="_handleResponse"
+        debounce-duration="300"></iron-ajax>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'editor-loader',
+
+      properties: {
+        loading: {
+          type: Boolean,
+          notify: true,
+          value: true,
+          reflectToAttribute: true,
+          observer: '_loadingStateObserver'
+        }
+      },
+
+      _handleResponse: function(response) {
+        console.log('material loaded');
+        this.material = response.detail.response;
+      }
+
+
+    });
+  </script>
+</dom-module>

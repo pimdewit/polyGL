@@ -1,0 +1,67 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="main-shell-styles.html">
+
+<dom-module id="main-shell">
+  <template>
+    <style include="main-shell-styles"></style>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}">      
+    </app-route>
+
+    <app-drawer-layout fullbleed force-narrow>
+      <!-- Drawer content -->
+      <app-drawer id="drawer" class="drawer" swipe-open transition-duration="300" opened="{{drawerOpened}}">
+        <app-toolbar class="drawer__header">Menu</app-toolbar>
+        <iron-selector id="dSelector" selected="[[page]]" attr-for-selected="name" class="drawer__content" role="navigation" on-iron-select="_closeDrawer">
+          <a name="home" href="/home">Home</a>
+          <a name="editor" href="/editor">Editor</a>
+          <a name="about" href="/about">About</a>
+          <a name="contact" href="/contact">Contact</a>
+        </iron-selector>
+      </app-drawer>
+
+      <!-- Main content -->
+      <app-header-layout>
+
+        <app-header reveals class="header">
+          <app-toolbar class="header_bar">
+            <paper-icon-button id="menutoggle" class="header__bar__menuicon" icon="menu" title="Open/Close Menu" on-tap="_toggleDrawer" on-keydown="_onKeyDown"></paper-icon-button>
+            <h3>Platho</h3>
+          </app-toolbar>
+        </app-header>
+
+        <iron-pages
+            selected="[[page]]"
+            attr-for-selected="name"
+            fallback-selection="404"
+            role="main">
+          <page-home name="home"></page-home>
+          <page-editor name="editor"></page-editor>
+          <page-about name="about"></page-about>
+          <page-contact name="contact"></page-contact>
+          <page-404 name="404"></page-404>
+        </iron-pages>
+      </app-header-layout>
+    </app-drawer-layout>
+  </template>
+
+  <script src="main-shell.js"></script>
+</dom-module>

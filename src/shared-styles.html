@@ -1,0 +1,45 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<!-- shared styles for all views -->
+<dom-module id="shared-styles">
+  <template>
+    <style>
+
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.5rem; }
+      h3 { font-size: 1.175rem; }
+      p  { font-size: 1rem; }
+
+      @media (min-width: 30rem) {
+        h1 { font-size: 2.2rem; }
+        h2 { font-size: 1.65rem; }
+        h3 { font-size: 1.3rem; }
+        p  { font-size: 1.2rem; }
+      }
+
+      @media (min-width: 60rem) {
+        h1 { font-size: 2.6rem; }
+        h2 { font-size: 1.95rem; }
+        h3 { font-size: 1.5275rem; }
+        p  { font-size: 1.3rem; }
+      }
+
+      @media (min-width: 120rem) {
+        h1 { font-size: 3rem; }
+        h2 { font-size: 2.25rem; }
+        h3 { font-size: 1.7625; }
+        p  { font-size: 1.5rem; }
+      }
+
+      @media print {
+        *,
+        *:before,
+        *:after {
+          background-color: transparent;
+          color: #000;
+          font-size: 13px;
+        }
+      }
+    </style>
+  </template>
+</dom-module>
