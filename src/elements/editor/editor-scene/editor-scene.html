@@ -113,18 +113,23 @@
       },
 
       _createSceneComponents: function() {
-        this._renderer = new THREE.WebGLRenderer({canvas: this.$.canvas});
+        this._renderer = new THREE.WebGLRenderer({
+            canvas: this.$.canvas,
+            antialias: true,
+            clearColor: 0xff0000 });
         this._textureLoader = new THREE.TextureLoader();
         this._scene = new THREE.Scene();
-        this._camera = new THREE.Camera();
+        this._camera = new THREE.PerspectiveCamera(70,
+            this.u_resolution.x / this.u_resolution.y, 1, 1000);
       },
 
       _createScene: function() {
         this._bundleUniforms();
 
-        var geometry = new THREE.PlaneBufferGeometry(2, 2);
+        // var geometry = new THREE.PlaneBufferGeometry(1, 1);
 
-        // TODO!
+        var geometry = new THREE.TorusKnotBufferGeometry(6, 1, 100, 2);
+
         var material = new THREE.ShaderMaterial({
           uniforms: this.uniforms,
           vertexShader: this.material.shader.vertex,
@@ -139,6 +144,9 @@
         this._animate();
       },
 
+      /**
+       * Get all the uniforms and bundle them together.
+       */
       _bundleUniforms: function() {
 
         if (this.texture) {
@@ -146,21 +154,26 @@
             u_time: {value: this.u_time},
             u_texture: {value: this.texture},
             u_textureCoord: {value: new THREE.Vector2(this.texture.image.naturalWidth, this.texture.image.naturalHeight)},
+            u_uvScale: { value: new THREE.Vector2(3.0, 1.0) },
             u_resolution: {value: new THREE.Vector2(this.u_resolution.x, this.u_resolution.y)},
             u_cursor: {value: new THREE.Vector2(this.u_cursor.x, this.u_cursor.y)}
           };
         } else {
           this.uniforms = {
             u_time: {value: this.u_time},
+            u_uvScale: { value: new THREE.Vector2(3.0, 1.0) },
             u_resolution: {value: new THREE.Vector2(this.u_resolution.x, this.u_resolution.y)},
             u_cursor: {value: new THREE.Vector2(this.u_cursor.x, this.u_cursor.y)}
           };
         }
       },
 
+      /**
+       * Set Config.
+       */
       _setComponentConfig: function() {
         this._textureLoader.minFilter = THREE.LinearFilter;
-        this._camera.position.z = 1;
+        this._camera.position.z = 30;
         this._renderer.setPixelRatio(window.devicePixelRatio);
       },
 
@@ -173,6 +186,9 @@
       },
 
       _render: function() {
+        this.uniforms.u_time.value += 0.002;
+        this.mesh.rotation.z += 0.01;
+        this.mesh.rotation.y += 0.005;
         this._renderer.render(this._scene, this._camera);
       },
 
@@ -188,15 +204,29 @@
        * Event Handlers.
       */
       _touchHandler: function(event) {
-        this.u_cursor.x = event.offsetX;
-        this.u_cursor.y = event.offsetY;
+        if (this.uniforms) {
+          this.uniforms.u_cursor.value.x = event.offsetX;
+          this.uniforms.u_cursor.value.y = event.offsetY;
+        } else {
+          this.u_cursor.x = event.offsetX;
+          this.u_cursor.y = event.offsetY;
+        }
       },
 
       _onResize: function() {
-        this.u_resolution.x = this.offsetWidth;
-        this.u_resolution.y = this.offsetHeight;
+        this.uniforms.u_resolution.value.x = this.offsetWidth;
+        this.uniforms.u_resolution.value.y = this.offsetHeight;
 
-        this._resizeRenderer(this.u_resolution.x, this.u_resolution.y);
+        this._updateCamera(this.uniforms.u_resolution.value.x,
+            this.uniforms.u_resolution.value.y);
+
+        this._resizeRenderer(this.uniforms.u_resolution.value.x,
+            this.uniforms.u_resolution.value.y);
+      },
+
+      _updateCamera: function(width, height) {
+        this._camera.aspect = width / height;
+        this._camera.updateProjectionMatrix();
       },
 
       _resizeRenderer: function(width, height) {
