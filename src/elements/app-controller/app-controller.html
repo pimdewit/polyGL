@@ -12,24 +12,28 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 
-<link rel="import" href="main-shell-styles.html">
+<link rel="import" href="app-controller-styles.html">
+<link rel="import" href="../app-icons/app-icons.html">
 
-<dom-module id="main-shell">
+<dom-module id="app-controller">
   <template>
-    <style include="main-shell-styles"></style>
+    <style include="app-controller-styles"></style>
 
     <app-location route="{{route}}"></app-location>
     <app-route
         route="{{route}}"
         pattern="/:page"
         data="{{routeData}}"
-        tail="{{subroute}}">      
+        tail="{{subroute}}">
     </app-route>
 
     <app-drawer-layout fullbleed force-narrow>
       <!-- Drawer content -->
       <app-drawer id="drawer" class="drawer" swipe-open transition-duration="300" opened="{{drawerOpened}}">
-        <app-toolbar class="drawer__header">Menu</app-toolbar>
+        <app-toolbar class="drawer__header">
+          <iron-icon id="moon" icon="app-logo:icon"></iron-icon>
+          <span>Menu</span>
+        </app-toolbar>
         <iron-selector id="dSelector" selected="[[page]]" attr-for-selected="name" class="drawer__content" role="navigation" on-iron-select="_closeDrawer">
           <a name="home" href="/home">Home</a>
           <a name="editor" href="/editor">Editor</a>
@@ -44,6 +48,8 @@
         <app-header reveals class="header">
           <app-toolbar class="header_bar">
             <paper-icon-button id="menutoggle" class="header__bar__menuicon" icon="menu" title="Open/Close Menu" on-tap="_toggleDrawer" on-keydown="_onKeyDown"></paper-icon-button>
+
+            <iron-icon id="moon" icon="app-logo:icon"></iron-icon>
             <h3>Platho</h3>
           </app-toolbar>
         </app-header>
@@ -63,5 +69,5 @@
     </app-drawer-layout>
   </template>
 
-  <script src="main-shell.js"></script>
+  <script src="app-controller.js"></script>
 </dom-module>

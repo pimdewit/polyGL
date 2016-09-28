@@ -1,5 +1,5 @@
 Polymer({
-  is: 'main-shell',
+  is: 'app-controller',
 
   properties: {
     page: {

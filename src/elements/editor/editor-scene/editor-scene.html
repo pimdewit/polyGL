@@ -41,14 +41,33 @@
 
         texture: Object,
 
-        uniforms: Object,
+        uniforms: {
+          type: Object,
+          value: {
+            u_texture: null,
+            u_resolution: {
+              value: {
+                x: 0.0,
+                y: 0.0
+              }
+            },
+            u_pointer: {
+              value: {
+                x: 0.0,
+                y: 0.0
+              }
+            },
+            u_time: 0.0
+          }
+        },
+
         u_texture: Object,
         u_time: {
           type: Number,
           value: 0.0
         },
 
-        u_cursor: {
+        u_pointer: {
           type: Object,
           value: [
             {
@@ -115,8 +134,7 @@
       _createSceneComponents: function() {
         this._renderer = new THREE.WebGLRenderer({
             canvas: this.$.canvas,
-            antialias: true,
-            clearColor: 0xff0000 });
+            antialias: true});
         this._textureLoader = new THREE.TextureLoader();
         this._scene = new THREE.Scene();
         this._camera = new THREE.PerspectiveCamera(70,
@@ -126,9 +144,9 @@
       _createScene: function() {
         this._bundleUniforms();
 
-        // var geometry = new THREE.PlaneBufferGeometry(1, 1);
+         //var geometry = new THREE.PlaneBufferGeometry(20, 20);
 
-        var geometry = new THREE.TorusKnotBufferGeometry(6, 1, 100, 2);
+        var geometry = new THREE.TetrahedronGeometry(10, 2);
 
         var material = new THREE.ShaderMaterial({
           uniforms: this.uniforms,
@@ -156,14 +174,14 @@
             u_textureCoord: {value: new THREE.Vector2(this.texture.image.naturalWidth, this.texture.image.naturalHeight)},
             u_uvScale: { value: new THREE.Vector2(3.0, 1.0) },
             u_resolution: {value: new THREE.Vector2(this.u_resolution.x, this.u_resolution.y)},
-            u_cursor: {value: new THREE.Vector2(this.u_cursor.x, this.u_cursor.y)}
+            u_pointer: {value: new THREE.Vector2(this.u_pointer.x, this.u_pointer.y)}
           };
         } else {
           this.uniforms = {
             u_time: {value: this.u_time},
             u_uvScale: { value: new THREE.Vector2(3.0, 1.0) },
             u_resolution: {value: new THREE.Vector2(this.u_resolution.x, this.u_resolution.y)},
-            u_cursor: {value: new THREE.Vector2(this.u_cursor.x, this.u_cursor.y)}
+            u_pointer: {value: new THREE.Vector2(this.u_pointer.x, this.u_pointer.y)}
           };
         }
       },
@@ -204,13 +222,8 @@
        * Event Handlers.
       */
       _touchHandler: function(event) {
-        if (this.uniforms) {
-          this.uniforms.u_cursor.value.x = event.offsetX;
-          this.uniforms.u_cursor.value.y = event.offsetY;
-        } else {
-          this.u_cursor.x = event.offsetX;
-          this.u_cursor.y = event.offsetY;
-        }
+        this.uniforms.u_pointer.value.x = event.offsetX;
+        this.uniforms.u_pointer.value.y = event.offsetY;
       },
 
       _onResize: function() {
@@ -254,7 +267,7 @@
           x: 0.0,
           y: 0.0
         };
-        this.u_cursor = {
+        this.u_pointer = {
           x: 0.0,
           y: 0.0
         };
