@@ -95,15 +95,20 @@ Polymer({
 
   // a11y
   _onDrawerKeyUp: function(event) {
-    if (event.which === 38 || event.keyCode === 38) {
+    let key = event.keyCode || event.which;
+
+    // Up-arrow
+    if (key === 38) {
       this._focusPreviousDrawerItem(event);
     }
 
-    if (event.which === 40 || event.keyCode === 40) {
+    // Down-arrow
+    if (key === 40) {
       this._focusNextDrawerItem(event);
     }
 
-    if (event.which === 9 || event.keycode === 9) {
+    // Tab
+    if (key === 9) {
       // Re-calculate focus on tab
       this._focusDrawerReset(event);
     }

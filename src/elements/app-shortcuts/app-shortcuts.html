@@ -1,0 +1,72 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+
+<dom-module id="app-shortcuts">
+  <template>
+    <paper-dialog id="shortcuts" with-backdrop>
+      <h2>Keyboard Shortcuts</h2>
+      <p><small>Capitals matter</small></p>
+      <ul>
+        <li><code>M</code> Toggle menu</li>
+        <li><code>H</code> Go to page: Home</li>
+        <li><code>E</code> Go to page: Editor</li>
+        <li><code>A</code> Go to page: About</li>
+        <li><code>C</code> Go to page: Contact</li>
+      </ul>
+      <paper-button dialog-dismiss autofocus>Dismiss</paper-button>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'app-shortcuts',
+
+      attached: function() {
+        this._addEventListeners();
+      },
+
+      _addEventListeners: function() {
+        window.addEventListener('keydown', function(event) {
+          this._globalKeyDown(event);
+        }.bind(this));
+      },
+
+      // Power user features
+      _globalKeyDown: function(event) {
+        let key = event.keyCode || event.which;
+
+        console.log(key);
+
+        // Toggle drawer with "m"
+        if (key === 77) {
+          this._toggleDrawer();
+        }
+
+        // Go to home with "H"
+        if (event.shiftKey && key === 72) {
+          this.page = 'home';
+        }
+
+        // Go to the editor with "E"
+        if (event.shiftKey && key === 69) {
+          this.page = 'editor';
+        }
+
+        // Go to the editor with "A"
+        if (event.shiftKey && key === 65) {
+          this.page = 'about';
+        }
+
+        // Go to the editor with "C"
+        if (event.shiftKey && key === 67) {
+          this.page = 'contact';
+        }
+
+        // Show help with "?"
+        if (event.shiftKey && key === 191) {
+          this.$.shortcuts.toggle();
+        }
+      }
+    });
+  </script>
+</dom-module>

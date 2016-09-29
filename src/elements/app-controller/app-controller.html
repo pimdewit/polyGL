@@ -14,6 +14,7 @@
 
 <link rel="import" href="app-controller-styles.html">
 <link rel="import" href="../app-icons/app-icons.html">
+<link rel="import" href="../app-shortcuts/app-shortcuts.html">
 
 <dom-module id="app-controller">
   <template>
@@ -35,10 +36,10 @@
           <span>Menu</span>
         </app-toolbar>
         <iron-selector id="dSelector" selected="[[page]]" attr-for-selected="name" class="drawer__content" role="navigation" on-iron-select="_closeDrawer">
-          <a name="home" href="/home">Home</a>
-          <a name="editor" href="/editor">Editor</a>
-          <a name="about" href="/about">About</a>
-          <a name="contact" href="/contact">Contact</a>
+          <a class="drawer__link" name="home" href="/home"><strong>H</strong>ome</a>
+          <a class="drawer__link" name="editor" href="/editor"><strong>E</strong>ditor</a>
+          <a class="drawer__link" name="about" href="/about"><strong>A</strong>bout</a>
+          <a class="drawer__link" name="contact" href="/contact"><strong>C</strong>ontact</a>
         </iron-selector>
       </app-drawer>
 
@@ -50,7 +51,7 @@
             <paper-icon-button id="menutoggle" class="header__bar__menuicon" icon="menu" title="Open/Close Menu" on-tap="_toggleDrawer" on-keydown="_onKeyDown"></paper-icon-button>
 
             <iron-icon id="moon" icon="app-logo:icon"></iron-icon>
-            <h3>Platho</h3>
+            <h3>heyheyheyhey</h3>
           </app-toolbar>
         </app-header>
 
@@ -67,6 +68,8 @@
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
+
+    <app-shortcuts></app-shortcuts>
   </template>
 
   <script src="app-controller.js"></script>

@@ -23,7 +23,8 @@
     "platinum-push-messaging": "^1.0.5",
     "paper-spinner": "^1.2.0",
     "iron-ajax": "^1.4.3",
-    "paper-listbox": "^1.1.2"
+    "paper-listbox": "^1.1.2",
+    "paper-dialog": "^1.1.0"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

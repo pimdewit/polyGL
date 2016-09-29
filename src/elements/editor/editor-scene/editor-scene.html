@@ -14,7 +14,15 @@
     }
   </style>
   <template>
-    <canvas id="canvas" class="canvas" on-mousemove="_touchHandler" on-touchmove="_touchHandler"></canvas>
+    <script src="../../../../bower_components/three.js/examples/js/controls/OrbitControls.js" on-load="_controlLoadHandler"></script>
+    <canvas
+      id="canvas"
+      class="canvas"
+      on-mousemove="_mousemoveHandler"
+      on-mouseup="_mouseupHandler"
+      on-mousedown="_mousedownHandler"
+      on-touchmove="_touchmoveHandler">
+    </canvas>
   </template>
 
   <script>
@@ -34,6 +42,16 @@
           observer: '_materialObserver'
         },
 
+        _mouseIsDragging: {
+          type: Boolean,
+          value: false,
+        },
+
+        clearColor: Number,
+
+        controls: Boolean,
+
+        _gridHelper: Object,
         _textureLoader: Object,
         _camera: Object,
         _scene: Object,
@@ -90,7 +108,7 @@
 
       _stateObserver: function() {
         if (!this.loading) {
-          this._init();
+          this._setup();
         }
       },
 
@@ -100,24 +118,27 @@
           this._destroy();
 
           // Create a new scene
+          this._setup();
           this._init();
-
-          if (this.material.texture) {
-            var texture = this.material.texture;
-            this._loadImage(texture);
-          } else {
-            this._createScene();
-          }
         }
       },
 
       /**
        * Scene.
        */
-      _init: function() {
+      _setup: function() {
         this._createSceneComponents();
         this._setComponentConfig();
         this._addEventListeners();
+      },
+
+      _init: function() {
+        if (this.material.texture) {
+          var texture = this.material.texture;
+          this._loadImage(texture);
+        } else {
+          this._createScene();
+        }
       },
 
       _loadImage: function(imageurl) {
@@ -135,10 +156,12 @@
         this._renderer = new THREE.WebGLRenderer({
             canvas: this.$.canvas,
             antialias: true});
+        this._renderer.setClearColor(this.clearColor);
         this._textureLoader = new THREE.TextureLoader();
         this._scene = new THREE.Scene();
         this._camera = new THREE.PerspectiveCamera(70,
             this.u_resolution.x / this.u_resolution.y, 1, 1000);
+        this._gridHelper = new THREE.GridHelper(100, 5);
       },
 
       _createScene: function() {
@@ -157,6 +180,7 @@
         this.mesh = new THREE.Mesh(geometry, material);
 
         this._scene.add(this.mesh);
+        this._scene.add(this._gridHelper);
 
         this._onResize();
         this._animate();
@@ -172,14 +196,12 @@
             u_time: {value: this.u_time},
             u_texture: {value: this.texture},
             u_textureCoord: {value: new THREE.Vector2(this.texture.image.naturalWidth, this.texture.image.naturalHeight)},
-            u_uvScale: { value: new THREE.Vector2(3.0, 1.0) },
             u_resolution: {value: new THREE.Vector2(this.u_resolution.x, this.u_resolution.y)},
             u_pointer: {value: new THREE.Vector2(this.u_pointer.x, this.u_pointer.y)}
           };
         } else {
           this.uniforms = {
             u_time: {value: this.u_time},
-            u_uvScale: { value: new THREE.Vector2(3.0, 1.0) },
             u_resolution: {value: new THREE.Vector2(this.u_resolution.x, this.u_resolution.y)},
             u_pointer: {value: new THREE.Vector2(this.u_pointer.x, this.u_pointer.y)}
           };
@@ -221,9 +243,38 @@
       /**
        * Event Handlers.
       */
-      _touchHandler: function(event) {
-        this.uniforms.u_pointer.value.x = event.offsetX;
-        this.uniforms.u_pointer.value.y = event.offsetY;
+      _controlLoadHandler: function(event) {
+        console.log('controls loaded');
+        this._controls = new THREE.OrbitControls(this._camera,
+            this._renderer.domElement);
+        this._controls.enableDamping = true;
+        this._controls.dampingFactor = 0.25;
+        this._controls.enableZoom = true;
+      },
+
+      _touchmoveHandler: function(event) {
+        for (let i = 0; i < event.changedTouches.length; i++) {
+          this.uniforms.u_pointer.value.x =
+              event.changedTouches[i].pageX * (i + 1);
+          this.uniforms.u_pointer.value.y =
+              event.changedTouches[i].pageY * (i + 1);
+        }
+      },
+
+      _mouseupHandler: function() {
+        this._mouseIsDragging = false;
+      },
+
+      // On mouse move
+      _mousemoveHandler: function(event) {
+        if (!this._mouseIsDragging) {
+          this.uniforms.u_pointer.value.x = event.offsetX;
+          this.uniforms.u_pointer.value.y = event.offsetY;
+        }
+      },
+
+      _mousedownHandler: function() {
+        this._mouseIsDragging = true;
       },
 
       _onResize: function() {
@@ -270,6 +321,10 @@
           x: 0.0,
           y: 0.0
         };
+        if (this._controls) {
+          this._controls.dispose();
+          this._controls = null;
+        }
         console.warn('Scene destroyed');
       }
     });
