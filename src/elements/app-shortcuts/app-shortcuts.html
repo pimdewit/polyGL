@@ -21,6 +21,13 @@
     Polymer({
       is: 'app-shortcuts',
 
+      properties: {
+        route: {
+          type: String,
+          notify: true
+        }
+      },
+
       attached: function() {
         this._addEventListeners();
       },
@@ -35,35 +42,34 @@
       _globalKeyDown: function(event) {
         let key = event.keyCode || event.which;
 
-        console.log(key);
-
-        // Toggle drawer with "m"
-        if (key === 77) {
-          this._toggleDrawer();
-        }
+        // // Toggle drawer with "m"
+        // if (key === 77) {
+        //   this.$$('drawer').toggle();
+        // }
 
         // Go to home with "H"
         if (event.shiftKey && key === 72) {
-          this.page = 'home';
+          this.route = '/home';
         }
 
         // Go to the editor with "E"
         if (event.shiftKey && key === 69) {
-          this.page = 'editor';
+          this.route = '/editor';
         }
 
         // Go to the editor with "A"
         if (event.shiftKey && key === 65) {
-          this.page = 'about';
+          this.route = '/about';
         }
 
         // Go to the editor with "C"
         if (event.shiftKey && key === 67) {
-          this.page = 'contact';
+          this.route = '/contact';
         }
 
         // Show help with "?"
         if (event.shiftKey && key === 191) {
+          console.log('Toggle Shortcuts');
           this.$.shortcuts.toggle();
         }
       }

@@ -1,8 +1,7 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
-
 <dom-module id="editor-dependencies">
   <template>
-    <script src="../../../../bower_components/three.js/build/three.js" on-load="_loadHandler"></script>
+    <div id="scriptcontainer"></div>
   </template>
 
   <script>
@@ -15,15 +14,44 @@
           notify: true,
         },
 
-        loaded: {
-          type: String,
-          reflectToAttribute: true
+        _scriptCount: {
+          type: Number,
+          value: 2,
+        },
+
+        _loadCount: {
+          type: Number,
+          value: 0
         }
       },
 
+      attached: function() {
+        this._createScript('../../../../bower_components/three.js/build/three.js');
+      },
+
       _loadHandler: function() {
-        this.loading = false;
-        this.loaded = true;
+        this._loadCount++;
+        console.log(this._loadCount, this._scriptCount);
+
+        if (this._loadCount === 1) {
+          this._createScript('../../../../bower_components/three.js/examples/js/controls/OrbitControls.js');
+        }
+
+        if (this._loadCount >= this._scriptCount) {
+          console.log('true');
+          this.loading = false;
+
+        }
+      },
+
+      _createScript: function(src) {
+        let script = document.createElement('script');
+        script.onload = function() {
+          this._loadHandler();
+        }.bind(this);
+
+        script.src = src;
+        this.$.scriptcontainer.parentNode.appendChild(script);
       }
     });
   </script>
