@@ -107,12 +107,15 @@
       /**
        * Initialse the scene.
        */
-      _init: function() {
-        if (this.material.texture) {
-          var texture = this.material.texture;
-          this._loadImage(texture);
+      _init: function(texture) {
+        if (this.material) {
+          if (texture) {
+            this._loadImage(texture);
+          } else {
+            this._createObjects();
+          }
         } else {
-          this._createScene();
+          this._createPlaceHolder();
         }
       },
 
@@ -133,8 +136,7 @@
        * Texture load handler.
        */
       _onTextureLoaded: function(texture) {
-        this.texture = texture;
-        this._createScene();
+        this._createObjects(texture);
       },
 
       /**
@@ -145,11 +147,10 @@
        * Prepare the scene.
        */
       _setup: function() {
+        if (this._scene) this._destroy();
         this._createSceneComponents();
         this._setComponentConfig();
         this._addEventListeners();
-        this.loading = 'loaded';
-        console.log(this.loading);
       },
 
       /**
@@ -169,49 +170,51 @@
             this._renderer.domElement);
       },
 
-      /**
-       * Create the scene with all pre-setup components.
-       */
-      _createScene: function() {
-        this._bundleUniforms();
+      _createPlaceHolder: function() {
+        console.warn('creating placeholder');
+        var geometry = new THREE.TetrahedronGeometry(10, 2);
+        var material = new THREE.MeshLambertMaterial();
+        this._onObjectCreated(geometry, material);
+      },
 
-         //var geometry = new THREE.PlaneBufferGeometry(20, 20);
+      _createObjects: function(texture) {
+        this._bundleUniforms(texture);
 
         var geometry = new THREE.TetrahedronGeometry(10, 2);
-
         var material = new THREE.ShaderMaterial({
           uniforms: this.uniforms,
           vertexShader: this.material.shader.vertex,
           fragmentShader: this.material.shader.fragment
         });
 
+        this._onObjectCreated(geometry, material);
+      },
+
+      _onObjectCreated: function(geometry, material) {
         this.mesh = new THREE.Mesh(geometry, material);
         this._scene.add(this.mesh);
 
         this._onResize();
         this._animate();
+        this.loading = 'loaded';
       },
 
       /**
        * Get all the uniforms and bundle them together.
        */
-      _bundleUniforms: function() {
-
-        if (this.texture) {
-          this.uniforms = {
-            u_time: {value: this.u_time},
-            u_texture: {value: this.texture},
-            u_textureCoord: {value: new THREE.Vector2(this.texture.image.naturalWidth, this.texture.image.naturalHeight)},
-            u_resolution: {value: new THREE.Vector2(this.u_resolution.x, this.u_resolution.y)},
-            u_pointer: {value: new THREE.Vector2(this.u_pointer.x, this.u_pointer.y)}
-          };
-        } else {
-          this.uniforms = {
-            u_time: {value: this.u_time},
-            u_resolution: {value: new THREE.Vector2(this.u_resolution.x, this.u_resolution.y)},
-            u_pointer: {value: new THREE.Vector2(this.u_pointer.x, this.u_pointer.y)}
-          };
+      _bundleUniforms: function(texture) {
+        if (texture) {
+          this.uniforms.u_texture = {value: texture},
+          this.uniforms.u_textureCoord = {value: new THREE.Vector2(
+              texture.image.naturalWidth,
+              texture.image.naturalHeight)}
         }
+
+        this.uniforms.u_time = {value: this.u_time},
+        this.uniforms.u_resolution = {value: new THREE.Vector2(
+            this.u_resolution.x,
+            this.u_resolution.y)},
+        this.uniforms.u_pointer = {value: new THREE.Vector2(this.u_pointer.x, this.u_pointer.y)}
       },
 
       /**
@@ -326,6 +329,7 @@
           return;
         } else if (this.loading === 'dependencies-loaded') {
           this._setup();
+          this._init();
         }
       },
 
@@ -333,16 +337,14 @@
        *  Triggers when a material is changed.
        */
       _materialObserver: function() {
-        if (this.material) {
-          if (this._scene) {
-            // Destroy the scene.
-            this._destroy();
-          }
+        var texture;
 
-          // Create a new scene.
-          this._setup();
-          this._init();
+        if (this.material.texture) {
+          texture = this.material.texture;
         }
+
+        this._setup();
+        this._init(texture);
       },
 
 
@@ -372,6 +374,7 @@
         };
         this._controls.dispose();
         this._controls = null;
+        this.loading = 'loading';
         console.warn('Scene destroyed');
       }
     });
