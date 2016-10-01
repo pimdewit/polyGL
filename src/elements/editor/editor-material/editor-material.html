@@ -19,23 +19,25 @@
       is: 'editor-material',
 
       properties: {
-        _storeMaterial: {
-          type: Object
-        },
-
         material: {
           type: Object,
-          notify: true
         }
       },
 
       _handleResponse: function(response) {
-        this._storeMaterial = response.detail.response;
+        this.material = response.detail.response;
       },
 
       _setMaterial: function() {
-        if (this._storeMaterial) {
-          this.material = this._storeMaterial;
+        if (this.material) {
+          var detail = {
+            'detail': {
+              'material': this.material
+            }
+          };
+
+          var event = new CustomEvent('editor-material-changed', detail);
+          window.dispatchEvent(event);
         }
       }
     });

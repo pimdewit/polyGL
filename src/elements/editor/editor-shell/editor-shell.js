@@ -2,49 +2,43 @@ Polymer({
   is: 'editor-shell',
 
   properties: {
-    dependenciesLoading: {
-      type: Boolean,
-      value: true,
-      observer: '_dependencyObserver'
-    },
-
-    sceneLoading: {
-      type: Boolean,
-      value: true,
-      observer: '_sceneObserver'
-    },
 
     loading: {
       type: Boolean,
-      value: true,
+      notify: true,
       reflectToAttribute: true
     },
 
-    selectedMaterial: {
-      type: Object,
-      notify: true
+    material: {
+      type: Object
     }
   },
 
   scenePath: '/src/elements/editor/editor-scene/editor-scene.html',
 
-  _dependencyObserver: function() {
-    if (!this.dependenciesLoading) {
-      this.importHref(this.scenePath, function() {
-        this.sceneLoading = false;
-      },
-      function() {
-        console.log('error');
-      });
-    }
+  attached: function() {
+    this._addEventListeners();
   },
 
-  _sceneObserver: function() {
-    if (!this.sceneLoading) {
-      this.loading = false;
-    }
+  _addEventListeners: function() {
+    window.addEventListener('editor-dependencies-loaded', function(event) {
+      this._startScene();
+    }.bind(this));
+
+    window.addEventListener('editor-material-changed', function(event) {
+      this.loading = 'dependencies-loaded';
+      this.material = event.detail.material;
+    }.bind(this));
   },
 
+  _startScene: function() {
+    this.importHref(this.scenePath, function() {
+      this.loading = 'dependencies-loaded';
+    },
+    function() {
+      console.log('error');
+    });
+  },
   _onMaterialListLoaded: function(response) {
     this.materialList = response.detail.response;
   }

@@ -10,7 +10,7 @@
     <style include="editor-loader-styles"></style>
 
     <paper-spinner id="loader" class="loader" alt="Loading 3D environment" active></paper-spinner>
-    <h3>Loading Library</h3>
+    <h3>Loading Environment</h3>
 
   </template>
 
@@ -21,18 +21,25 @@
       properties: {
         loading: {
           type: Boolean,
-          notify: true,
+          value: true,
+          reflectToAttribute: true
+        },
+
+        state: {
+          type: Boolean,
           value: true,
           reflectToAttribute: true,
-          observer: '_loadingStateObserver'
+          observer: '_stateObserver'
         }
       },
 
-      _loadingStateObserver: function() {
-        this.$.loader.active = this.loading;
-      },
-
-
+      _stateObserver: function() {
+        if (this.state === 'loaded') {
+          this.$.loader.active = this.loading = false;
+        } else {
+          this.$.loader.active = this.loading = true;
+        }
+      }
     });
   </script>
 </dom-module>

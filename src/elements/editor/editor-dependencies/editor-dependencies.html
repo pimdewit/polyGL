@@ -31,16 +31,19 @@
 
       _loadHandler: function() {
         this._loadCount++;
-        console.log(this._loadCount, this._scriptCount);
-
         if (this._loadCount === 1) {
           this._createScript('../../../../bower_components/three.js/examples/js/controls/OrbitControls.js');
         }
 
         if (this._loadCount >= this._scriptCount) {
-          console.log('true');
-          this.loading = false;
+          var detail = {
+            'detail': {
+              'loading': false
+            }
+          };
 
+          var event = new CustomEvent('editor-dependencies-loaded', detail);
+          window.dispatchEvent(event);
         }
       },
 

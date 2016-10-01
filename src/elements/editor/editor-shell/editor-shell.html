@@ -22,8 +22,8 @@
         debounce-duration="300">
     </iron-ajax>
 
-    <editor-dependencies id="dependencies" loading="{{dependenciesLoading}}"></editor-dependencies>
-    <editor-scene material="[[material]]" clear-color="0xffc626" loading="{{sceneLoading}}" controls></editor-scene>
+    <editor-dependencies id="dependencies" loading></editor-dependencies>
+    <editor-scene material="[[material]]" clear-color="0xffc626" loading="{{loading}}" controls></editor-scene>
 
     <div class="materials">
       <!-- Loop through the main list -->
@@ -31,15 +31,15 @@
         <!-- Loop through the categories -->
         <template is="dom-repeat" items="[[categories.category]]" as="category">
           <h3>{{category.name}}</h3>
-          <!-- Loop trhough the materials -->
+          <!-- Loop through the materials -->
           <template is="dom-repeat" items="[[category.materials]]">
-            <editor-material material-properties="{{item}}" material="{{material}}"></editor-material>
+            <editor-material material-properties="{{item}}"></editor-material>
           </template>
         </template>
       </template>
     </div>
 
-    <editor-loader loading="{{loading}}"></editor-loader>
+    <editor-loader state="[[loading]]"></editor-loader>
   </template>
 
   <script src="editor-shell.js"></script>

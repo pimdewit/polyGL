@@ -14,7 +14,6 @@
     }
   </style>
   <template>
-    <script src="../../../../bower_components/three.js/examples/js/controls/OrbitControls.js" on-load="_controlLoadHandler"></script>
     <canvas
       id="canvas"
       class="canvas"
@@ -31,8 +30,9 @@
 
       properties: {
         loading: {
-          type: Boolean,
-          value: true,
+          type: String,
+          value: 'loading',
+          notify: true,
           reflectToAttribute: true,
           observer: '_stateObserver'
         },
@@ -48,8 +48,6 @@
         },
 
         clearColor: Number,
-
-        controls: Boolean,
 
         _gridHelper: Object,
         _textureLoader: Object,
@@ -106,32 +104,9 @@
         }
       },
 
-      _stateObserver: function() {
-        if (!this.loading) {
-          this._setup();
-        }
-      },
-
-      _materialObserver: function() {
-        if (this.material) {
-          // Destroy the scene
-          this._destroy();
-
-          // Create a new scene
-          this._setup();
-          this._init();
-        }
-      },
-
       /**
-       * Scene.
+       * Initialse the scene.
        */
-      _setup: function() {
-        this._createSceneComponents();
-        this._setComponentConfig();
-        this._addEventListeners();
-      },
-
       _init: function() {
         if (this.material.texture) {
           var texture = this.material.texture;
@@ -141,17 +116,45 @@
         }
       },
 
+      /**
+       * Texture Handling ------------------------------------------------------
+       */
+
+      /**
+       * Load an image, create a blob.
+       */
       _loadImage: function(imageurl) {
         this._textureLoader.load(imageurl, function(texture) {
           this._onTextureLoaded(texture);
         }.bind(this));
        },
 
+       /**
+       * Texture load handler.
+       */
       _onTextureLoaded: function(texture) {
         this.texture = texture;
         this._createScene();
       },
 
+      /**
+       * Scene Preperation -----------------------------------------------------
+       */
+
+      /**
+       * Prepare the scene.
+       */
+      _setup: function() {
+        this._createSceneComponents();
+        this._setComponentConfig();
+        this._addEventListeners();
+        this.loading = 'loaded';
+        console.log(this.loading);
+      },
+
+      /**
+       * Create all components we need in our scene.
+       */
       _createSceneComponents: function() {
         this._renderer = new THREE.WebGLRenderer({
             canvas: this.$.canvas,
@@ -159,11 +162,16 @@
         this._renderer.setClearColor(this.clearColor);
         this._textureLoader = new THREE.TextureLoader();
         this._scene = new THREE.Scene();
-        this._camera = new THREE.PerspectiveCamera(70,
+        this._camera = new THREE.PerspectiveCamera(110,
             this.u_resolution.x / this.u_resolution.y, 1, 1000);
         this._gridHelper = new THREE.GridHelper(100, 5);
+        this._controls = new THREE.OrbitControls(this._camera,
+            this._renderer.domElement);
       },
 
+      /**
+       * Create the scene with all pre-setup components.
+       */
       _createScene: function() {
         this._bundleUniforms();
 
@@ -178,9 +186,7 @@
         });
 
         this.mesh = new THREE.Mesh(geometry, material);
-
         this._scene.add(this.mesh);
-        this._scene.add(this._gridHelper);
 
         this._onResize();
         this._animate();
@@ -215,43 +221,44 @@
         this._textureLoader.minFilter = THREE.LinearFilter;
         this._camera.position.z = 30;
         this._renderer.setPixelRatio(window.devicePixelRatio);
+
+        this._controls.enableDamping = true;
+        this._controls.dampingFactor = 0.25;
+        this._controls.enableZoom = false;
+      },
+
+      /**
+       * Render ----------------------------------------------------------------
+       */
+
+      /**
+       * Animate.
+       */
+      _animate: function() {
+        this._RAF = requestAnimationFrame(this._animate.bind(this));
+        this.uniforms.u_time.value += 0.002;
+        this._render();
       },
 
       /**
        * Render.
        */
-      _animate: function() {
-        this._RAF = requestAnimationFrame(this._animate.bind(this));
-        this._render();
-      },
-
       _render: function() {
-        this.uniforms.u_time.value += 0.002;
-        this.mesh.rotation.z += 0.01;
-        this.mesh.rotation.y += 0.005;
         this._renderer.render(this._scene, this._camera);
       },
 
       /**
-       * Event Listeners.
+       * Event Listeners. ------------------------------------------------------
        */
+
       _addEventListeners: function() {
         this._resizeHandler = this._onResize.bind(this);
         window.addEventListener('resize', this._resizeHandler);
       },
 
       /**
-       * Event Handlers.
-      */
-      _controlLoadHandler: function(event) {
-        console.log('controls loaded');
-        this._controls = new THREE.OrbitControls(this._camera,
-            this._renderer.domElement);
-        this._controls.enableDamping = true;
-        this._controls.dampingFactor = 0.25;
-        this._controls.enableZoom = true;
-      },
-
+       * Mobile touch handler.
+       */
       _touchmoveHandler: function(event) {
         for (let i = 0; i < event.changedTouches.length; i++) {
           this.uniforms.u_pointer.value.x =
@@ -261,11 +268,23 @@
         }
       },
 
+      /**
+       * mouse down handler.
+       */
+      _mousedownHandler: function() {
+        this._mouseIsDragging = true;
+      },
+
+      /**
+       * Mouse up handler.
+       */
       _mouseupHandler: function() {
         this._mouseIsDragging = false;
       },
 
-      // On mouse move
+      /**
+       * Mouse move handler.
+       */
       _mousemoveHandler: function(event) {
         if (!this._mouseIsDragging) {
           this.uniforms.u_pointer.value.x = event.offsetX;
@@ -273,33 +292,63 @@
         }
       },
 
-      _mousedownHandler: function() {
-        this._mouseIsDragging = true;
-      },
-
+      /**
+       * Resize handler.
+       */
       _onResize: function() {
         this.uniforms.u_resolution.value.x = this.offsetWidth;
         this.uniforms.u_resolution.value.y = this.offsetHeight;
 
-        this._updateCamera(this.uniforms.u_resolution.value.x,
-            this.uniforms.u_resolution.value.y);
-
-        this._resizeRenderer(this.uniforms.u_resolution.value.x,
-            this.uniforms.u_resolution.value.y);
-      },
-
-      _updateCamera: function(width, height) {
-        this._camera.aspect = width / height;
+        this._camera.aspect = this.uniforms.u_resolution.value.x /
+            this.uniforms.u_resolution.value.y;
         this._camera.updateProjectionMatrix();
+
+        this._renderer.setSize(this.uniforms.u_resolution.value.x,
+            this.uniforms.u_resolution.value.y);
       },
 
-      _resizeRenderer: function(width, height) {
-        this._renderer.setSize(width, height);
-      },
-
+      /**
+       * Detached handler.
+       */
       detached: function() {
         this._destroy();
       },
+
+      /**
+       * Observers -------------------------------------------------------------
+       */
+      
+      /**
+       *  Check the current loading state.
+       */
+      _stateObserver: function() {
+        if (this.loading === ('loading' || 'loaded')) {
+          return;
+        } else if (this.loading === 'dependencies-loaded') {
+          this._setup();
+        }
+      },
+
+      /**
+       *  Triggers when a material is changed.
+       */
+      _materialObserver: function() {
+        if (this.material) {
+          if (this._scene) {
+            // Destroy the scene.
+            this._destroy();
+          }
+
+          // Create a new scene.
+          this._setup();
+          this._init();
+        }
+      },
+
+
+      /**
+       * -----------------------------------------------------------------------
+       */
 
       /**
        * Destroy Everything
@@ -321,10 +370,8 @@
           x: 0.0,
           y: 0.0
         };
-        if (this._controls) {
-          this._controls.dispose();
-          this._controls = null;
-        }
+        this._controls.dispose();
+        this._controls = null;
         console.warn('Scene destroyed');
       }
     });
