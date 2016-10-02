@@ -159,6 +159,9 @@
         this._onObjectCreated(geometry, material);
       },
 
+      /**
+       * Create a placeholder scene if no material is assigned.
+       */
       _createObjects: function() {
         var geometry = new THREE.TetrahedronGeometry(10, 2);
         var material = new THREE.ShaderMaterial({
@@ -170,13 +173,20 @@
         this._onObjectCreated(geometry, material);
       },
 
+      /**
+       * Add the objects to the scene.
+       */
       _onObjectCreated: function(geometry, material) {
-        this.mesh = new THREE.Mesh(geometry, material);
-        this._scene.add(this.mesh);
+        if (geometry && material) {
+          this.mesh = new THREE.Mesh(geometry, material);
+          this._scene.add(this.mesh);
 
-        this._onResize();
-        this._animate();
-        this.loading = 'loaded';
+          this._onResize();
+          this._animate();
+          this.loading = 'loaded';
+        } else {
+          console.warn('Something went wrong');
+        }
       },
 
       /**

@@ -2,16 +2,13 @@ Polymer({
   is: 'editor-shell',
 
   properties: {
-
     loading: {
       type: Boolean,
-      notify: true,
       reflectToAttribute: true
     },
 
-    material: {
-      type: Object
-    }
+    material: Object,
+    paused: Boolean
   },
 
   scenePath: '/src/elements/editor/editor-scene/editor-scene.html',
@@ -26,8 +23,10 @@ Polymer({
     }.bind(this));
 
     window.addEventListener('editor-material-changed', function(event) {
-      this.loading = 'dependencies-loaded';
-      this.material = event.detail.material;
+      if (this.material != event.detail.material) {
+        this.loading = 'loading';
+        this.material = event.detail.material;
+      }
     }.bind(this));
   },
 
@@ -39,6 +38,7 @@ Polymer({
       console.log('error');
     });
   },
+
   _onMaterialListLoaded: function(response) {
     this.materialList = response.detail.response;
   }

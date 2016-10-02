@@ -26,13 +26,13 @@
       },
 
       attached: function() {
-        this._createScript('../../../../bower_components/three.js/build/three.js');
+        this._createElement('../../../../bower_components/three.js/build/three.js');
       },
 
       _loadHandler: function() {
         this._loadCount++;
         if (this._loadCount === 1) {
-          this._createScript('../../../../bower_components/three.js/examples/js/controls/OrbitControls.js');
+          this._createElement('../../../../bower_components/three.js/examples/js/controls/OrbitControls.js');
         }
 
         if (this._loadCount >= this._scriptCount) {
@@ -47,14 +47,21 @@
         }
       },
 
-      _createScript: function(src) {
+      /**
+       * Create a script element.
+       */
+      _createElement: function(src) {
         let script = document.createElement('script');
         script.onload = function() {
           this._loadHandler();
         }.bind(this);
 
         script.src = src;
-        this.$.scriptcontainer.parentNode.appendChild(script);
+        this._appendElement(script);
+      },
+
+      _appendElement: function(element) {
+        this.$.scriptcontainer.parentNode.appendChild(element);
       }
     });
   </script>
