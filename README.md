@@ -67,4 +67,5 @@ browsers currently installed on your machine.
 ### Custom Events:
 
 `editor-dependencies-loaded`
+`editor-material-changed`
 

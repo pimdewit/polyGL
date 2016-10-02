@@ -48,8 +48,6 @@
         },
 
         clearColor: Number,
-
-        _gridHelper: Object,
         _textureLoader: Object,
         _camera: Object,
         _scene: Object,
@@ -73,34 +71,8 @@
                 y: 0.0
               }
             },
-            u_time: 0.0
+            u_time: 1.0
           }
-        },
-
-        u_texture: Object,
-        u_time: {
-          type: Number,
-          value: 0.0
-        },
-
-        u_pointer: {
-          type: Object,
-          value: [
-            {
-              x: 0.5,
-              y: 0.5
-            }
-          ]
-        },
-
-        u_resolution: {
-          type: Object,
-          value: [
-            {
-              x: 0.0,
-              y: 0.0
-            }
-          ]
         }
       },
 
@@ -136,7 +108,11 @@
        * Texture load handler.
        */
       _onTextureLoaded: function(texture) {
-        this._createObjects(texture);
+        this.uniforms.u_texture = {value: texture},
+        this.uniforms.u_textureCoord = {value: new THREE.Vector2(
+            texture.image.naturalWidth,
+            texture.image.naturalHeight)}
+        this._createObjects();
       },
 
       /**
@@ -148,6 +124,8 @@
        */
       _setup: function() {
         if (this._scene) this._destroy();
+        this.uniforms.u_time = {value: 1.0};
+        this._updateResolution();
         this._createSceneComponents();
         this._setComponentConfig();
         this._addEventListeners();
@@ -163,9 +141,11 @@
         this._renderer.setClearColor(this.clearColor);
         this._textureLoader = new THREE.TextureLoader();
         this._scene = new THREE.Scene();
-        this._camera = new THREE.PerspectiveCamera(110,
-            this.u_resolution.x / this.u_resolution.y, 1, 1000);
-        this._gridHelper = new THREE.GridHelper(100, 5);
+
+        // this._updateResolution();
+        this._camera = new THREE.PerspectiveCamera(70,
+            this.uniforms.u_resolution.x / this.uniforms.u_resolution.y,
+            1, 1000);
         this._controls = new THREE.OrbitControls(this._camera,
             this._renderer.domElement);
       },
@@ -173,13 +153,13 @@
       _createPlaceHolder: function() {
         console.warn('creating placeholder');
         var geometry = new THREE.TetrahedronGeometry(10, 2);
-        var material = new THREE.MeshLambertMaterial();
+        var material = new THREE.MeshLambertMaterial({
+            wireframe: true,
+            wireframeLinewidth: 4});
         this._onObjectCreated(geometry, material);
       },
 
-      _createObjects: function(texture) {
-        this._bundleUniforms(texture);
-
+      _createObjects: function() {
         var geometry = new THREE.TetrahedronGeometry(10, 2);
         var material = new THREE.ShaderMaterial({
           uniforms: this.uniforms,
@@ -200,24 +180,6 @@
       },
 
       /**
-       * Get all the uniforms and bundle them together.
-       */
-      _bundleUniforms: function(texture) {
-        if (texture) {
-          this.uniforms.u_texture = {value: texture},
-          this.uniforms.u_textureCoord = {value: new THREE.Vector2(
-              texture.image.naturalWidth,
-              texture.image.naturalHeight)}
-        }
-
-        this.uniforms.u_time = {value: this.u_time},
-        this.uniforms.u_resolution = {value: new THREE.Vector2(
-            this.u_resolution.x,
-            this.u_resolution.y)},
-        this.uniforms.u_pointer = {value: new THREE.Vector2(this.u_pointer.x, this.u_pointer.y)}
-      },
-
-      /**
        * Set Config.
        */
       _setComponentConfig: function() {
@@ -226,7 +188,7 @@
         this._renderer.setPixelRatio(window.devicePixelRatio);
 
         this._controls.enableDamping = true;
-        this._controls.dampingFactor = 0.25;
+        this._controls.dampingFactor = 0.1;
         this._controls.enableZoom = false;
       },
 
@@ -299,13 +261,33 @@
        * Resize handler.
        */
       _onResize: function() {
+        this._updateResolution();
+
+        this._updateCamera();
+        this._updateRendererSize();
+      },
+
+      /**
+       * Update the resolution.
+       */
+      _updateResolution: function() {
         this.uniforms.u_resolution.value.x = this.offsetWidth;
         this.uniforms.u_resolution.value.y = this.offsetHeight;
+      },
 
+      /**
+       * Update the camera aspect ratio.
+       */
+      _updateCamera: function() {
         this._camera.aspect = this.uniforms.u_resolution.value.x /
             this.uniforms.u_resolution.value.y;
         this._camera.updateProjectionMatrix();
+      },
 
+      /**
+       * Update the renderer size..
+       */
+      _updateRendererSize: function() {
         this._renderer.setSize(this.uniforms.u_resolution.value.x,
             this.uniforms.u_resolution.value.y);
       },
@@ -349,7 +331,7 @@
 
 
       /**
-       * -----------------------------------------------------------------------
+       * Destroy ---------------------------------------------------------------
        */
 
       /**
@@ -359,23 +341,43 @@
         console.warn('Destroying Scene');
         window.removeEventListener('resize', this._resizeHandler);
         cancelAnimationFrame(this._RAF);
-        this.texture = null;
+
+        this._destroyComponents();
+        this._resetUniforms();
+
+        this.loading = 'loading';
+        console.warn('Scene destroyed');
+      },
+
+      /**
+       * Destroy initialised THREE components.
+       */
+      _destroyComponents: function() {
         this._scene = null;
         this._camera = null;
         this._textureLoader = null;
-        this.time = 0.0;
-        this.u_mouse = {
-          x: 0.0,
-          y: 0.0
-        };
-        this.u_pointer = {
-          x: 0.0,
-          y: 0.0
-        };
+        this._destroyControls();
+      },
+
+      /**
+       * Destroy controls.
+       */
+      _destroyControls: function() {
         this._controls.dispose();
         this._controls = null;
-        this.loading = 'loading';
-        console.warn('Scene destroyed');
+      },
+
+      /**
+       * Reset the shader uniforms.
+       */
+      _resetUniforms: function() {
+        this.uniforms.u_texture = null;
+        this.uniforms.u_textureCoord = null;
+        this.uniforms.u_resolution.value.x = 0.0;
+        this.uniforms.u_resolution.value.y = 0.0;
+        this.uniforms.u_pointer.value.x = 0.0;
+        this.uniforms.u_pointer.value.y = 0.0;
+        this.uniforms.u_time.value = 0.0;
       }
     });
   </script>
