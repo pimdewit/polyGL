@@ -20,9 +20,9 @@
         <!-- Loop through the main list -->
         <template is="dom-repeat" items="[[materials]]" as="categories">
           <!-- Loop through the categories -->
-          <paper-tabs class="tabselector" selected="{{selectedMaterialGroup}}">
+          <paper-tabs class="tabselector" selected="{{selectedMaterialGroup}}" autoselect>
             <template is="dom-repeat" items="[[categories.category]]" as="category">
-                <paper-tab class="tabselector__item">{{category.name}}</paper-tab>
+              <paper-tab class="tabselector__item">{{category.name}}</paper-tab>
             </template>
           </paper-tabs>
 
@@ -31,9 +31,11 @@
               <div class="tab__content">
                 <paper-dialog-scrollable>
                   <paper-menu>
-                    <template is="dom-repeat" items="[[category.materials]]">
-                      <editor-material material-properties="{{item}}"></editor-material>
-                    </template>
+                    <iron-selector>
+                      <template is="dom-repeat" items="[[category.materials]]">
+                        <editor-material material-properties="{{item}}" class="material"></editor-material>
+                      </template>
+                    </iron-selector>
                   </paper-menu>
                 </paper-dialog-scrollable>
               </div>

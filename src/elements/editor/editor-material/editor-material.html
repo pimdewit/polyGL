@@ -2,6 +2,21 @@
 <link rel="import" href="../../../../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="editor-material">
+  <style>
+    :host {
+      display: block;
+    }
+
+    paper-item {
+      --paper-item-focused-before: {
+        background-color: transparent;
+      };
+    }
+
+    paper-ripple {
+      color: #b8c1c5;
+    }
+  </style>
   <template>
     <iron-ajax
         auto
@@ -11,7 +26,10 @@
         debounce-duration="300">
     </iron-ajax>
 
-    <paper-item on-tap="_setMaterial">{{materialProperties.title}}</paper-item>
+    <paper-item on-tap="_setMaterial">
+      <span>{{materialProperties.title}}</span>
+      <paper-ripple></paper-ripple>
+    </paper-item>
   </template>
 
   <script>
