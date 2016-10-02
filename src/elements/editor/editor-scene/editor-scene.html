@@ -87,7 +87,7 @@
             this._createObjects();
           }
         } else {
-          this._createPlaceHolder();
+          this._createBasicPlaceholder();
         }
       },
 
@@ -102,7 +102,7 @@
         this._textureLoader.load(imageurl, function(texture) {
           this._onTextureLoaded(texture);
         }.bind(this));
-       },
+      },
 
        /**
        * Texture load handler.
@@ -141,8 +141,6 @@
         this._renderer.setClearColor(this.clearColor);
         this._textureLoader = new THREE.TextureLoader();
         this._scene = new THREE.Scene();
-
-        // this._updateResolution();
         this._camera = new THREE.PerspectiveCamera(70,
             this.uniforms.u_resolution.x / this.uniforms.u_resolution.y,
             1, 1000);
@@ -150,7 +148,10 @@
             this._renderer.domElement);
       },
 
-      _createPlaceHolder: function() {
+      /**
+       * Create placeholder scene if no material is found.
+       */
+      _createBasicPlaceholder: function() {
         console.warn('creating placeholder');
         var geometry = new THREE.TetrahedronGeometry(10, 2);
         var material = new THREE.MeshLambertMaterial({
@@ -185,7 +186,7 @@
           this._animate();
           this.loading = 'loaded';
         } else {
-          console.warn('Something went wrong');
+          console.warn('no geometry or material found.');
         }
       },
 
