@@ -7,7 +7,7 @@
       position: relative;
 
       width: 100%;
-      height: calc(100vh - 64px);
+      height: 100%;
 
       align-items: center;
       justify-content: center;
@@ -385,9 +385,9 @@
         this.uniforms.u_textureCoord = null;
         this.uniforms.u_resolution.value.x = 0.0;
         this.uniforms.u_resolution.value.y = 0.0;
-        this.uniforms.u_pointer.value.x = 0.0;
-        this.uniforms.u_pointer.value.y = 0.0;
-        this.uniforms.u_time.value = 0.0;
+        this.uniforms.u_pointer.value.x = this.offsetWidth / 2;
+        this.uniforms.u_pointer.value.y = this.offsetHeight / 2;
+        this.uniforms.u_time.value = 1.0;
       }
     });
   </script>

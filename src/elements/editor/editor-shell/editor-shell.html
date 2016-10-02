@@ -1,11 +1,10 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../shared-styles.html">
 
-<link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
-
 <link rel="import" href="../editor-loader/editor-loader.html">
 <link rel="import" href="../editor-dependencies/editor-dependencies.html">
 <link rel="import" href="../editor-material/editor-material.html">
+<link rel="import" href="../editor-gui/editor-gui.html">
 
 <link rel="import" href="editor-shell-styles.html">
 
@@ -23,21 +22,14 @@
     </iron-ajax>
 
     <editor-dependencies id="dependencies" loading></editor-dependencies>
-    <editor-scene material="[[material]]" clear-color="0xffc626" loading="{{loading}}" controls></editor-scene>
 
-    <div class="materials">
-      <!-- Loop through the main list -->
-      <template is="dom-repeat" items="[[materialList]]" as="categories">
-        <!-- Loop through the categories -->
-        <template is="dom-repeat" items="[[categories.category]]" as="category">
-          <h3>{{category.name}}</h3>
-          <!-- Loop through the materials -->
-          <template is="dom-repeat" items="[[category.materials]]">
-            <editor-material material-properties="{{item}}"></editor-material>
-          </template>
-        </template>
-      </template>
-    </div>
+    <editor-gui materials="[[materialList]]">
+      <editor-scene material="[[material]]" clear-color="0xffc626" loading="{{loading}}" controls></editor-scene>
+      <div class="gui__overlay">
+        <h1 class="gui__overlay__title"><span id="title">Placeholder</span></h1>
+        <p class="gui__overlay__description"><span id="description">Select a material to continue</span></p>
+      </div>
+    </editor-gui>
 
     <editor-loader state="[[loading]]"></editor-loader>
   </template>
