@@ -1,0 +1,69 @@
+<html><head><link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="app-controller-styles.html">
+<link rel="import" href="../app-icons/app-icons.html">
+<link rel="import" href="../app-shortcuts/app-shortcuts.html">
+
+</head><body><dom-module id="app-controller">
+  <template>
+    <style include="app-controller-styles"></style>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
+    </app-route>
+
+    <app-drawer-layout fullbleed="" force-narrow="">
+      
+      <app-drawer id="drawer" class="drawer" swipe-open="" transition-duration="300" opened="{{drawerOpened}}">
+        <app-toolbar class="drawer__header">
+          <iron-icon id="moon" icon="app-logo:icon"></iron-icon>
+          <span>Menu</span>
+        </app-toolbar>
+        <iron-selector id="dSelector" selected="[[page]]" attr-for-selected="name" class="drawer__content" role="navigation" on-iron-select="_closeDrawer">
+          <a class="drawer__link" name="home" href="/home"><strong>H</strong>ome</a>
+          <a class="drawer__link" name="editor" href="/editor"><strong>E</strong>ditor</a>
+          <a class="drawer__link" name="about" href="/about"><strong>A</strong>bout</a>
+          <a class="drawer__link" name="contact" href="/contact"><strong>C</strong>ontact</a>
+        </iron-selector>
+      </app-drawer>
+
+      
+      <app-header-layout>
+
+        <app-header reveals="" class="header">
+          <app-toolbar class="header_bar">
+            <paper-icon-button id="menutoggle" class="header__bar__menuicon" icon="menu" title="Open/Close Menu" on-tap="_toggleDrawer" on-keydown="_onKeyDown"></paper-icon-button>
+
+            <iron-icon id="moon" icon="app-logo:icon"></iron-icon>
+            <h3>heyheyheyhey</h3>
+          </app-toolbar>
+        </app-header>
+
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
+          <page-home name="home"></page-home>
+          <page-editor name="editor"></page-editor>
+          <page-about name="about"></page-about>
+          <page-contact name="contact"></page-contact>
+          <page-404 name="404"></page-404>
+        </iron-pages>
+      </app-header-layout>
+    </app-drawer-layout>
+
+    <app-shortcuts route="{{route.path}}"></app-shortcuts>
+  </template>
+
+  <script src="app-controller.js"></script>
+</dom-module>
+</body></html>

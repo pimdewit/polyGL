@@ -206,10 +206,6 @@
       /**
        * Render ----------------------------------------------------------------
        */
-
-      /**
-       * Animate.
-       */
       _animate: function() {
         this._RAF = requestAnimationFrame(this._animate.bind(this));
         this.uniforms.u_time.value += 0.002;
@@ -237,7 +233,7 @@
        * Mobile touch handler.
        */
       _touchmoveHandler: function(event) {
-        for (let i = 0; i < event.changedTouches.length; i++) {
+        for (var i = 0; i < event.changedTouches.length; i++) {
           this.uniforms.u_pointer.value.x =
               event.changedTouches[i].pageX * (i + 1);
           this.uniforms.u_pointer.value.y =

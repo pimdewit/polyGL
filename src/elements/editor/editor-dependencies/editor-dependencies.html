@@ -51,7 +51,7 @@
        * Create a script element.
        */
       _createElement: function(src) {
-        let script = document.createElement('script');
+        var script = document.createElement('script');
         script.onload = function() {
           this._loadHandler();
         }.bind(this);

@@ -1,0 +1,31 @@
+[
+  {
+    "category": [
+      {
+        "name": "Basic",
+        "materials": [
+          {
+            "id": "red",
+            "title": "Stripes n all",
+            "description": "A vibrant red."
+          },
+          {
+            "id": "yellow",
+            "title": "Yellow",
+            "description": "A summery yellow."
+          }
+        ]
+      },
+      {
+        "name": "Special",
+        "materials": [
+          {
+            "id": "yellow",
+            "title": "Yellow",
+            "description": "A summery yellow."
+          }
+        ]
+      }
+    ]
+  }
+]

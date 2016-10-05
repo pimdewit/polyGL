@@ -1,0 +1,9 @@
+<html><head><link rel="import" href="../../../../bower_components/polymer/polymer.html">
+</head><body><dom-module id="editor-dependencies">
+  <template>
+    <div id="scriptcontainer"></div>
+  </template>
+
+  <script>Polymer({is:"editor-dependencies",properties:{loading:{type:String,notify:!0},_scriptCount:{type:Number,value:2},_loadCount:{type:Number,value:0}},attached:function(){this._createElement("../../../../bower_components/three.js/build/three.js")},_loadHandler:function(){if(this._loadCount++,1===this._loadCount&&this._createElement("../../../../bower_components/three.js/examples/js/controls/OrbitControls.js"),this._loadCount>=this._scriptCount){var e={detail:{loading:!1}},t=new CustomEvent("editor-dependencies-loaded",e);window.dispatchEvent(t)}},_createElement:function(e){var t=document.createElement("script");t.onload=function(){this._loadHandler()}.bind(this),t.src=e,this._appendElement(t)},_appendElement:function(e){this.$.scriptcontainer.parentNode.appendChild(e)}});</script>
+</dom-module>
+</body></html>

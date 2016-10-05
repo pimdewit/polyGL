@@ -1,0 +1,19 @@
+<html><head><link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../shared-styles.html">
+
+<link rel="import" href="../../../../bower_components/paper-spinner/paper-spinner.html">
+
+<link rel="import" href="editor-loader-styles.html">
+
+</head><body><dom-module id="editor-loader">
+  <template>
+    <style include="editor-loader-styles"></style>
+
+    <paper-spinner id="loader" class="loader" alt="Loading 3D environment" active=""></paper-spinner>
+    <h3>Loading Environment</h3>
+
+  </template>
+
+  <script>Polymer({is:"editor-loader",properties:{loading:{type:Boolean,value:!0,reflectToAttribute:!0},state:{type:Boolean,value:!0,reflectToAttribute:!0,observer:"_stateObserver"}},_stateObserver:function(){"loaded"===this.state?this.$.loader.active=this.loading=!1:this.$.loader.active=this.loading=!0}});</script>
+</dom-module>
+</body></html>

@@ -95,7 +95,7 @@ Polymer({
 
   // a11y
   _onDrawerKeyUp: function(event) {
-    let key = event.keyCode || event.which;
+    var key = event.keyCode || event.which;
 
     // Up-arrow
     if (key === 38) {

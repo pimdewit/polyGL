@@ -1,0 +1,32 @@
+<html><head><link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-ajax/iron-ajax.html">
+
+</head><body><dom-module id="editor-material">
+  <style>
+    :host {
+      display: block;
+    }
+
+    paper-item {
+      --paper-item-focused-before: {
+        background-color: transparent;
+      };
+    }
+
+    paper-ripple {
+      color: #b8c1c5;
+    }
+  </style>
+  <template>
+    <iron-ajax auto="" url="/src/data/materials/{{materialProperties.id}}.json" handle-as="json" on-response="_handleResponse" debounce-duration="300">
+    </iron-ajax>
+
+    <paper-item on-tap="_setMaterial">
+      <span>{{materialProperties.title}}</span>
+      <paper-ripple></paper-ripple>
+    </paper-item>
+  </template>
+
+  <script>Polymer({is:"editor-material",properties:{material:{type:Object}},_handleResponse:function(e){this.material=e.detail.response},_setMaterial:function(){if(this.material){var e={detail:{material:this.material}},t=new CustomEvent("editor-material-changed",e);window.dispatchEvent(t)}}});</script>
+</dom-module>
+</body></html>

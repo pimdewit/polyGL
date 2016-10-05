@@ -1,0 +1,22 @@
+<html><head><link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+
+</head><body><dom-module id="app-shortcuts">
+  <template>
+    <paper-dialog id="shortcuts" with-backdrop="">
+      <h2>Keyboard Shortcuts</h2>
+      <p><small>Capitals matter</small></p>
+      <ul>
+        <li><code>M</code> Toggle menu</li>
+        <li><code>H</code> Go to page: Home</li>
+        <li><code>E</code> Go to page: Editor</li>
+        <li><code>A</code> Go to page: About</li>
+        <li><code>C</code> Go to page: Contact</li>
+      </ul>
+      <paper-button dialog-dismiss="" autofocus="">Dismiss</paper-button>
+    </paper-dialog>
+  </template>
+
+  <script>Polymer({is:"app-shortcuts",properties:{route:{type:String,notify:!0}},attached:function(){this._addEventListeners()},_addEventListeners:function(){window.addEventListener("keydown",function(t){this._globalKeyDown(t)}.bind(this))},_globalKeyDown:function(t){var e=t.keyCode||t.which;t.shiftKey&&72===e&&(this.route="/home"),t.shiftKey&&69===e&&(this.route="/editor"),t.shiftKey&&65===e&&(this.route="/about"),t.shiftKey&&67===e&&(this.route="/contact"),t.shiftKey&&191===e&&(console.log("Toggle Shortcuts"),this.$.shortcuts.toggle())}});</script>
+</dom-module>
+</body></html>

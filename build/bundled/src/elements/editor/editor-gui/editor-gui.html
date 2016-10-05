@@ -1,0 +1,54 @@
+<html><head><link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../shared-styles.html">
+
+<link rel="import" href="../../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../../../bower_components/paper-item/paper-item.html">
+
+<link rel="import" href="editor-gui-styles.html">
+
+</head><body><dom-module id="editor-gui">
+  <template>
+    <style include="shared-styles"></style>
+    <style include="editor-gui-styles"></style>
+
+    <paper-drawer-panel right-drawer="" drawer-width="320px" class="drawer">
+      <div drawer="" class="drawer__sidebar">
+        
+        <template is="dom-repeat" items="[[materials]]" as="categories">
+          
+          <paper-tabs class="tabselector" selected="{{selectedMaterialGroup}}" autoselect="">
+            <template is="dom-repeat" items="[[categories.category]]" as="category">
+              <paper-tab class="tabselector__item">{{category.name}}</paper-tab>
+            </template>
+          </paper-tabs>
+
+          <iron-selector selected="{{selectedMaterialGroup}}" class="tab">
+            <template is="dom-repeat" items="[[categories.category]]" as="category">
+              <div class="tab__content">
+                <paper-dialog-scrollable>
+                  <paper-menu>
+                    <iron-selector>
+                      <template is="dom-repeat" items="[[category.materials]]">
+                        <editor-material material-properties="{{item}}" class="material"></editor-material>
+                      </template>
+                    </iron-selector>
+                  </paper-menu>
+                </paper-dialog-scrollable>
+              </div>
+            </template>
+          </iron-selector>
+        </template>
+      </div>
+      <div main="">
+        <content></content>
+      </div>
+    </paper-drawer-panel>
+  </template>
+
+  <script src="editor-gui.js"></script>
+</dom-module>
+</body></html>

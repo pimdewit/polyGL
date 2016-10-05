@@ -1,0 +1,45 @@
+<html><head></head><body><dom-module id="editor-gui-styles">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+        height: 100%;
+      }
+
+      .drawer {
+        height: 100%;
+      }
+
+      .drawer__sidebar {
+        padding: 32px;
+        box-sizing: border-box;
+      }
+
+      .tabselector {
+        --paper-tabs-selection-bar-color: #000;
+      }
+
+      .tabselector__item {
+        --paper-tab-ink: #b8c1c5;
+      }
+
+      .tab__content {
+        display: none;
+      }
+
+      .tab__content.iron-selected {
+        display: block;
+      }
+
+      .tab__content__item {
+        width: 100%;
+      }
+
+      .material.iron-selected {
+        background-color: #e5eaec;
+      }
+
+    </style>
+  </template>
+</dom-module></body></html>

@@ -1,0 +1,42 @@
+<html><head></head><body><dom-module id="editor-shell-styles">
+  <template>
+    <style>
+      :host {
+        display: block;
+
+        height: calc(100vh - 64px);
+      }
+
+      .gui__overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+
+        width: 50%;
+
+        padding: 32px;
+
+        pointer-events: none;
+      }
+
+      .gui__overlay__title {
+        margin-bottom: -16px;
+        color: #fff;
+        text-shadow: 0 1px 5px #f39b55;
+      }
+
+      .gui__overlay__title span {
+        font-size: 1.5em;
+      }
+
+      .gui__overlay__divider {
+        border-bottom: 1px solid rgba(255, 255, 255, .25);
+        border-top: 1px solid rgba(0, 0, 0, .125);
+      }
+
+      .gui__overlay__description {
+        margin-top: 0;
+      }
+    </style>
+  </template>
+</dom-module></body></html>

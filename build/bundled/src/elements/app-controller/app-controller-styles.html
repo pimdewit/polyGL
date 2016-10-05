@@ -1,0 +1,49 @@
+<html><head></head><body><dom-module id="app-controller-styles">
+  <template>
+    <style>
+      :host {
+        --app-primary-color: #4285f4;
+        --app-secondary-color: black;
+
+        display: block;
+      }
+
+      .drawer__content {
+        margin: 0 20px;
+      }
+
+      .drawer__content a {
+        display: block;
+
+        padding: 0 16px;
+
+        text-decoration: none;
+
+        color: var(--app-secondary-color);
+
+        line-height: 40px;
+      }
+
+      .drawer__content a.iron-selected {
+        color: black;
+
+        font-weight: bold;
+      }
+
+
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        color: rgba(0, 0, 0, .75);
+        pointer-events: none;
+        /*background-color: #ffc626;*/
+      }
+
+      .header__bar__menuicon {
+        margin-right: 16px;
+      }
+    </style>
+  </template>
+</dom-module></body></html>

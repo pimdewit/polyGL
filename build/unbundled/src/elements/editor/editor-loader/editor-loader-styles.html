@@ -1,0 +1,43 @@
+<html><head></head><body><dom-module id="editor-loader-styles">
+  <template>
+    <style>
+      :host {
+        display: flex;
+
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+
+        background-color: white;
+
+        opacity: 0;
+        visibility: hidden;
+
+        transition: .4s opacity cubic-bezier(.645, .045, .355, 1),
+                    .4s visibility cubic-bezier(.645, .045, .355, 1);
+
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      :host([loading]) {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .loader {
+        --paper-spinner-stroke-width: 2px;
+        --paper-spinner-layer-1-color: #212223;
+        --paper-spinner-layer-2-color: #212223;
+        --paper-spinner-layer-3-color: #212223;
+        --paper-spinner-layer-4-color: #212223;
+        width: 128px;
+        height: 128px;
+      }
+    </style>
+  </template>
+</dom-module></body></html>
