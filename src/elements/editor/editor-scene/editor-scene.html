@@ -135,9 +135,7 @@
        * Create all components we need in our scene.
        */
       _createSceneComponents: function() {
-        this._renderer = new THREE.WebGLRenderer({
-            canvas: this.$.canvas,
-            antialias: true});
+        this._renderer = new THREE.WebGLRenderer({canvas: this.$.canvas});
         this._renderer.setClearColor(this.clearColor);
         this._textureLoader = new THREE.TextureLoader();
         this._scene = new THREE.Scene();
