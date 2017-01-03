@@ -31,7 +31,7 @@ Polymer({
       }
     };
 
-    var event = new CustomEvent('editor-zoomed', detail);
+    var event = new CustomEvent('editor-zoom', detail);
     window.dispatchEvent(event);
 
     this.zoomed === false ? this.zoomText = 'zoom in' : this.zoomText = 'zoom out';

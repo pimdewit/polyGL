@@ -63,6 +63,10 @@
           type: Number,
           value: 30
         },
+        _cameraZoom: {
+          type: Number,
+          value: 1
+        },
 
         _scene: Object,
         _renderer: Object,
@@ -213,6 +217,7 @@
       _setComponentConfig: function() {
         this._textureLoader.minFilter = THREE.LinearFilter;
         this._camera.position.z = this._cameraPositionZ;
+        this._camera.zoom = this._cameraZoom;
         this._renderer.setPixelRatio(window.devicePixelRatio);
 
         this._controls.enableDamping = true;
@@ -244,12 +249,12 @@
       /**
        * Event Listeners. ------------------------------------------------------
        */
-
       _addEventListeners: function() {
-        this._zoomHandler = this._onZoom.bind(this);
         this._resizeHandler = this._onResize.bind(this);
         window.addEventListener('resize', this._resizeHandler);
-        window.addEventListener('editor-zoomed', this._zoomHandler);
+
+        this._zoomHandler = this._onZoom.bind(this);
+        window.addEventListener('editor-zoom', this._zoomHandler);
       },
 
       /**
@@ -304,7 +309,8 @@
       _onZoom: function(event) {
         var z;
         event.detail.zoomed === true ? z = 1.5 : z = 1;
-        console.log(this._camera.zoom);
+
+        this._cameraZoom = z;
         new TWEEN.Tween(this._camera).to({zoom: z}, 2000).easing(TWEEN.Easing.Elastic.Out).start();
       },
 
@@ -380,6 +386,7 @@
       _destroy: function() {
         console.warn('Destroying Scene');
         window.removeEventListener('resize', this._resizeHandler);
+        window.removeEventListener('editor-zoom', this._zoomHandler);
         cancelAnimationFrame(this._RAF);
 
         this._destroyComponents();
