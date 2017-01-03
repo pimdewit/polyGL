@@ -16,7 +16,7 @@
 
         _scriptCount: {
           type: Number,
-          value: 2,
+          value: 3,
         },
 
         _loadCount: {
@@ -31,8 +31,11 @@
 
       _loadHandler: function() {
         this._loadCount++;
+
         if (this._loadCount === 1) {
           this._createElement('../../../../bower_components/three.js/examples/js/controls/OrbitControls.js');
+        } else if (this._loadCount === 2) {
+          this._createElement('../../../../bower_components/tween.js/src/Tween.js');
         }
 
         if (this._loadCount >= this._scriptCount) {

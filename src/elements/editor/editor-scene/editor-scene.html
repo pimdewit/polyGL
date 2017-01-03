@@ -12,6 +12,14 @@
       align-items: center;
       justify-content: center;
     }
+
+    .canvas {
+      cursor: -webkit-grab;
+    }
+
+    .canvas:active {
+      cursor: -webkit-grabbing;
+    }
   </style>
   <template>
     <canvas
@@ -49,11 +57,22 @@
 
         clearColor: Number,
         _textureLoader: Object,
+
         _camera: Object,
+        _cameraPositionZ: {
+          type: Number,
+          value: 30
+        },
+
         _scene: Object,
         _renderer: Object,
 
         texture: Object,
+
+        zoomed: {
+          type: Boolean,
+          reflectToAttribute: true
+        },
 
         uniforms: {
           type: Object,
@@ -135,7 +154,7 @@
        * Create all components we need in our scene.
        */
       _createSceneComponents: function() {
-        this._renderer = new THREE.WebGLRenderer({canvas: this.$.canvas});
+        this._renderer = new THREE.WebGLRenderer({antialias: true, canvas: this.$.canvas});
         this._renderer.setClearColor(this.clearColor);
         this._textureLoader = new THREE.TextureLoader();
         this._scene = new THREE.Scene();
@@ -193,12 +212,12 @@
        */
       _setComponentConfig: function() {
         this._textureLoader.minFilter = THREE.LinearFilter;
-        this._camera.position.z = 30;
+        this._camera.position.z = this._cameraPositionZ;
         this._renderer.setPixelRatio(window.devicePixelRatio);
 
         this._controls.enableDamping = true;
         this._controls.dampingFactor = 0.05;
-        this._controls.rotateSpeed = 0.25;
+        this._controls.rotateSpeed = 0.08;
         this._controls.enableZoom = false;
         this._controls.enableKeys = false;
       },
@@ -209,6 +228,8 @@
       _animate: function() {
         this._RAF = requestAnimationFrame(this._animate.bind(this));
         this.uniforms.u_time.value += 0.002;
+        TWEEN.update();
+        this._camera.updateProjectionMatrix();
         this._render();
       },
 
@@ -225,8 +246,10 @@
        */
 
       _addEventListeners: function() {
+        this._zoomHandler = this._onZoom.bind(this);
         this._resizeHandler = this._onResize.bind(this);
         window.addEventListener('resize', this._resizeHandler);
+        window.addEventListener('editor-zoomed', this._zoomHandler);
       },
 
       /**
@@ -276,6 +299,16 @@
       },
 
       /**
+       * Zoom handler.
+       */
+      _onZoom: function(event) {
+        var z;
+        event.detail.zoomed === true ? z = 1.5 : z = 1;
+        console.log(this._camera.zoom);
+        new TWEEN.Tween(this._camera).to({zoom: z}, 2000).easing(TWEEN.Easing.Elastic.Out).start();
+      },
+
+      /**
        * Update the resolution.
        */
       _updateResolution: function() {
@@ -289,7 +322,6 @@
       _updateCamera: function() {
         this._camera.aspect = this.uniforms.u_resolution.value.x /
             this.uniforms.u_resolution.value.y;
-        this._camera.updateProjectionMatrix();
       },
 
       /**

@@ -42,6 +42,12 @@
             </template>
           </iron-selector>
         </template>
+
+        <paper-button on-tap="setZoom">
+          <template is="dom-if" if="{{zoomed}}"><iron-icon icon="zoom-out"></iron-icon></template>
+          <template is="dom-if" if="{{!zoomed}}"><iron-icon icon="zoom-in"></iron-icon></template>
+          <span>[[zoomText]]</span>
+        </paper-button>
       </div>
       <div main>
         <content></content>

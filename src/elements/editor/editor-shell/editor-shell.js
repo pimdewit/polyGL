@@ -9,7 +9,8 @@ Polymer({
 
     materialList: Object,
     material: Object,
-    paused: Boolean
+    paused: Boolean,
+    zoomed: Boolean
   },
 
   scenePath: '/src/elements/editor/editor-scene/editor-scene.html',
@@ -27,10 +28,11 @@ Polymer({
     }.bind(this));
 
     window.addEventListener('editor-material-changed', function(event) {
+      // Check if new material is different from the currently active material.
       if (this.material != event.detail.material) {
         this.loading = 'loading';
         this.material = event.detail.material;
-        
+
         this._populateMeta();
       }
     }.bind(this));
