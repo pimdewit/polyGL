@@ -39,10 +39,27 @@
         color: rgba(0, 0, 0, .75);
         pointer-events: none;
         /*background-color: #ffc626;*/
+        background-color: #eef1f3;
       }
 
-      .header__bar__menuicon {
+      .header::before {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        content: '';
+        display: block;
+        mix-blend-mode: overlay;
+        box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.4);
+      }
+
+      .header__menuicon {
         margin-right: 16px;
+      }
+
+      .header__logoicon {
+        margin-right: 8px;
       }
     </style>
   </template>

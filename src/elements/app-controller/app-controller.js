@@ -26,12 +26,16 @@ Polymer({
     '_routePageChanged(routeData.page)'
   ],
 
-  _routePageChanged: function(page) {
+  attached() {
+    this._addEventListeners();
+  },
+
+  _routePageChanged(page) {
     this.page = page || 'home';
     this.drawerOpened = false;
   },
 
-  _pageChanged: function(page) {
+  _pageChanged(page) {
     // Load page import on demand. Show 404 page if fails
     var resolvedPageUrl = this.resolveUrl(
         '../pages/page-' + page + '/page-' + page + '.html');
@@ -39,37 +43,46 @@ Polymer({
     this.importHref(resolvedPageUrl, null, this._showPage404, true);
   },
 
-  _showPage404: function() {
+  _showPage404() {
     this.page = '404';
   },
 
   // -----------------------------------------------------------------------
   // -----------------------------------------------------------------------
 
+
+  _addEventListeners() {
+    window.addEventListener('app-drawer', function(event) {
+      if (event.detail.toggle) {
+        this._toggleDrawer();
+      }
+    }.bind(this));
+  },
+
   // -----------------------------------------------------------------------
   // -----------------------------------------------------------------------
 
-  _openDrawer: function() {
+  _openDrawer() {
     this.$.drawer.open();
   },
 
-  _closeDrawer: function() {
+  _closeDrawer() {
     this.$.drawer.close();
   },
 
-  _toggleDrawer: function() {
+  _toggleDrawer() {
     this.drawerOpened = !this.drawerOpened;
   },
 
   // a11y
-  _drawerOpenState: function() {
+  _drawerOpenState() {
     if (!this.drawerOpened) {
       this.$.menutoggle.focus();
     }
   },
 
   // a11y
-  _handledFocus: function() {
+  _handledFocus() {
     this.async(function() {
       this.$.dSelector.selectedItem.focus();
       this.dFocus = this._getSelectedDrawerItem();
@@ -77,24 +90,24 @@ Polymer({
   },
 
   // a11y
-  _onDrawerTransitionEnd: function() {
+  _onDrawerTransitionEnd() {
     if (this.drawerOpened) {
       this._handledFocus();
     }
   },
 
-  _getSelectedDrawerItem: function() {
+  _getSelectedDrawerItem() {
     return this.$.dSelector.indexOf(this.$.dSelector.selectedItem);
   },
 
-  _onKeyDown: function(event) {
+  _onKeyDown(event) {
     if (event.keyCode === 32 || event.keyCode === 13) {
       this._toggleDrawer();
     }
   },
 
   // a11y
-  _onDrawerKeyUp: function(event) {
+  _onDrawerKeyUp(event) {
     var key = event.keyCode || event.which;
 
     // Up-arrow
@@ -115,7 +128,7 @@ Polymer({
   },
 
   // a11y
-  _focusPreviousDrawerItem: function(event) {
+  _focusPreviousDrawerItem(event) {
     if (this.dFocus <= 0) {
       this.dFocus = this.$.dSelector.items.length - 1;
     } else {
@@ -125,7 +138,7 @@ Polymer({
   },
 
   // a11y
-  _focusNextDrawerItem: function(event) {
+  _focusNextDrawerItem(event) {
     if (this.dFocus >= this.$.dSelector.items.length - 1) {
       this.dFocus = 0;
     } else {
@@ -135,7 +148,7 @@ Polymer({
   },
 
   // a11y
-  _focusDrawerReset: function(event) {
+  _focusDrawerReset(event) {
     if (this.dFocus >= this.$.dSelector.items.length -1) {
       this.dFocus = 0;
     } else {

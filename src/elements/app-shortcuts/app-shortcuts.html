@@ -2,16 +2,41 @@
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 
 <dom-module id="app-shortcuts">
+  <style>
+    li {
+      padding: 8px 0;
+      list-style: none;
+    }
+
+    code {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background-color: rgba(0, 0, 0, .07);
+      text-align: center;
+      border: 1px solid #b0b7bb;
+      border-radius: 2px;
+      margin-right: 8px;
+      font-weight: bold;
+
+    }
+  </style>
   <template>
     <paper-dialog id="shortcuts" with-backdrop>
       <h2>Keyboard Shortcuts</h2>
       <p><small>Capitals matter</small></p>
+
+      <h3>Application wide</h3>
       <ul>
         <li><code>M</code> Toggle menu</li>
-        <li><code>H</code> Go to page: Home</li>
-        <li><code>E</code> Go to page: Editor</li>
-        <li><code>A</code> Go to page: About</li>
-        <li><code>C</code> Go to page: Contact</li>
+      </ul>
+
+      <h3>Page navigation</h3>
+      <ul>
+        <li><code>H</code> Home</li>
+        <li><code>E</code> Editor</li>
+        <li><code>A</code> About</li>
+        <li><code>C</code> Contact</li>
       </ul>
       <paper-button dialog-dismiss autofocus>Dismiss</paper-button>
     </paper-dialog>
@@ -43,9 +68,16 @@
         var key = event.keyCode || event.which;
 
         // // Toggle drawer with "m"
-        // if (key === 77) {
-        //   this.$$('drawer').toggle();
-        // }
+        if (key === 77) {
+          var detail = {
+            'detail': {
+              'toggle': true
+            }
+          };
+
+          var event = new CustomEvent('app-drawer', detail);
+          window.dispatchEvent(event);
+        }
 
         // Go to home with "H"
         if (event.shiftKey && key === 72) {
@@ -69,7 +101,6 @@
 
         // Show help with "?"
         if (event.shiftKey && key === 191) {
-          console.log('Toggle Shortcuts');
           this.$.shortcuts.toggle();
         }
       }

@@ -16,7 +16,7 @@
 
         _scriptCount: {
           type: Number,
-          value: 3,
+          value: 4,
         },
 
         _loadCount: {
@@ -26,7 +26,7 @@
       },
 
       attached: function() {
-        this._createElement('../../../../bower_components/three.js/build/three.js');
+        this._createElement('../../../../bower_components/three.js/build/three.min.js');
       },
 
       _loadHandler: function() {
@@ -36,6 +36,8 @@
           this._createElement('../../../../bower_components/three.js/examples/js/controls/OrbitControls.js');
         } else if (this._loadCount === 2) {
           this._createElement('../../../../bower_components/tween.js/src/Tween.js');
+        } else if (this._loadCount === 3) {
+          this._createElement('../../../../bower_components/stats.js/build/stats.min.js');
         }
 
         if (this._loadCount >= this._scriptCount) {

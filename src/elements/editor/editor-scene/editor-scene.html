@@ -50,6 +50,11 @@
           observer: '_materialObserver'
         },
 
+        environmentEffects: {
+          type: Object,
+          observer: '_environmentEffectsObserver'
+        },
+
         _mouseIsDragging: {
           type: Boolean,
           value: false,
@@ -146,12 +151,21 @@
        * Prepare the scene.
        */
       _setup: function() {
-        if (this._scene) this._destroy();
+        if (this._scene) {
+          this._destroy();
+        }
+
         this.uniforms.u_time = {value: 1.0};
         this._updateResolution();
         this._createSceneComponents();
         this._setComponentConfig();
         this._addEventListeners();
+        this._addDebug();
+      },
+
+      _addDebug() {
+        this.stats = new Stats();
+        document.body.appendChild(this.stats.dom);
       },
 
       /**
@@ -173,11 +187,8 @@
        * Create placeholder scene if no material is found.
        */
       _createBasicPlaceholder: function() {
-        console.warn('creating placeholder');
-        var geometry = new THREE.TetrahedronGeometry(10, 2);
-        var material = new THREE.MeshLambertMaterial({
-            wireframe: true,
-            wireframeLinewidth: 4});
+        var geometry = new THREE.TetrahedronGeometry(10, 4);
+        var material = new THREE.MeshBasicMaterial({wireframe: true, wireframeLinewidth: 3});
         this._onObjectCreated(geometry, material);
       },
 
@@ -185,7 +196,7 @@
        * Create a placeholder scene if no material is assigned.
        */
       _createObjects: function() {
-        var geometry = new THREE.TetrahedronGeometry(10, 2);
+        var geometry = new THREE.BoxGeometry(20, 20, 5);
         var material = new THREE.ShaderMaterial({
           uniforms: this.uniforms,
           vertexShader: this.material.shader.vertex,
@@ -203,11 +214,18 @@
           this.mesh = new THREE.Mesh(geometry, material);
           this._scene.add(this.mesh);
 
+          var geometry = new THREE.PlaneGeometry(10000, 10000);
+          var material = new THREE.MeshBasicMaterial({color: 0xff0000, transparent: true, side: THREE.DoubleSide, blending: THREE.MultiplyBlending});
+          this.floor = new THREE.Mesh(geometry, material);
+          this.floor.rotation.x = Math.PI / 2;
+          this.floor.position.y = -200;
+          this._scene.add(this.floor);
+
           this._onResize();
           this._animate();
           this.loading = 'loaded';
         } else {
-          console.warn('no geometry or material found.');
+          console.error('Failed object creation: No geometry or material found.');
         }
       },
 
@@ -231,11 +249,13 @@
        * Render ----------------------------------------------------------------
        */
       _animate: function() {
-        this._RAF = requestAnimationFrame(this._animate.bind(this));
+        this.stats.begin();
         this.uniforms.u_time.value += 0.002;
         TWEEN.update();
         this._camera.updateProjectionMatrix();
         this._render();
+        this.stats.end();
+        this._RAF = requestAnimationFrame(this._animate.bind(this));
       },
 
       /**
@@ -328,6 +348,7 @@
       _updateCamera: function() {
         this._camera.aspect = this.uniforms.u_resolution.value.x /
             this.uniforms.u_resolution.value.y;
+        this._camera.updateProjectionMatrix();
       },
 
       /**
@@ -375,6 +396,31 @@
         this._init(texture);
       },
 
+      _environmentEffectsObserver() {
+        console.log(this.environmentEffects);
+        return;
+        if (this.environmentEffects.shader) {
+          if (THREE && this._scene) {
+            var geometry = new THREE.PlaneGeometry(1000, 1000);
+            var material = new THREE.ShaderMaterial({
+              uniforms: this.uniforms,
+              vertexShader: this.environmentEffects.shader.vertex,
+              fragmentShader: this.environmentEffects.shader.fragment,
+              transparent: true,
+              blending: THREE.AdditiveBlending
+            });
+
+            var environment = new THREE.Mesh(geometry, material);
+            environment.position.z = this._camera.position.z - 5;
+            this._scene.add(environment);
+          } else {
+            setTimeout(function() {
+              this._environmentEffectsObserver();
+            }.bind(this), 500);
+          }
+        }
+      },
+
 
       /**
        * Destroy ---------------------------------------------------------------
@@ -403,7 +449,9 @@
         this._scene = null;
         this._camera = null;
         this._textureLoader = null;
-        this._destroyControls();
+
+        // We decided to keep the controls.
+        // this._destroyControls();
       },
 
       /**

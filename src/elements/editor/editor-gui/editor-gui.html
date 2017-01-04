@@ -31,11 +31,9 @@
               <div class="tab__content">
                 <paper-dialog-scrollable>
                   <paper-menu>
-                    <iron-selector>
-                      <template is="dom-repeat" items="[[category.materials]]">
-                        <editor-material material-properties="{{item}}" class="material"></editor-material>
-                      </template>
-                    </iron-selector>
+                    <template is="dom-repeat" items="[[category.materials]]">
+                      <editor-material material-properties="{{item}}" class="material"></editor-material>
+                    </template>
                   </paper-menu>
                 </paper-dialog-scrollable>
               </div>
@@ -43,9 +41,9 @@
           </iron-selector>
         </template>
 
-        <paper-button on-tap="setZoom">
-          <template is="dom-if" if="{{zoomed}}"><iron-icon icon="zoom-out"></iron-icon></template>
-          <template is="dom-if" if="{{!zoomed}}"><iron-icon icon="zoom-in"></iron-icon></template>
+        <paper-button id="zoom" on-tap="setZoom" raised>
+          <template is="dom-if" if="[[zoomed]]"><iron-icon icon="zoom-out"></iron-icon></template>
+          <template is="dom-if" if="[[!zoomed]]"><iron-icon icon="zoom-in"></iron-icon></template>
           <span>[[zoomText]]</span>
         </paper-button>
       </div>

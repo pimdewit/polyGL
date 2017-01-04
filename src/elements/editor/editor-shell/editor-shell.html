@@ -21,12 +21,21 @@
         debounce-duration="300">
     </iron-ajax>
 
+    <iron-ajax
+        auto
+        url="/src/data/materials/environment_effects.json"
+        handle-as="json"
+        on-response="_onEnvironmentEffectsLoaded"
+        debounce-duration="300">
+    </iron-ajax>
+
+
     <editor-dependencies id="dependencies" loading></editor-dependencies>
 
     <editor-gui materials="[[materialList]]">
-      <editor-scene material="[[material]]" clear-color="0xe1e3e6" loading="{{loading}}" controls></editor-scene>
+      <editor-scene material="[[material]]" environment-effects="[[environmentEffects]]" clear-color="0xe1e3e6" loading="{{loading}}" controls></editor-scene>
       <div class="gui__overlay">
-        <h1 class="gui__overlay__title"><span id="title">Placeholder</span></h1>
+        <h1 class="gui__overlay__title"><span id="title"></span></h1>
         <hr class="gui__overlay__divider">
         <p class="gui__overlay__description"><span id="description">Select a material to continue</span></p>
       </div>

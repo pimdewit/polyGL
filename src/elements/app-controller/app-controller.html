@@ -30,7 +30,7 @@
 
     <app-drawer-layout fullbleed force-narrow>
       <!-- Drawer content -->
-      <app-drawer id="drawer" class="drawer" swipe-open transition-duration="300" opened="{{drawerOpened}}">
+      <app-drawer id="drawer" class="drawer main-menu" swipe-open transition-duration="300" opened="{{drawerOpened}}">
         <app-toolbar class="drawer__header">
           <iron-icon id="moon" icon="app-logo:icon"></iron-icon>
           <span>Menu</span>
@@ -47,11 +47,11 @@
       <app-header-layout>
 
         <app-header reveals class="header">
-          <app-toolbar class="header_bar">
-            <paper-icon-button id="menutoggle" class="header__bar__menuicon" icon="menu" title="Open/Close Menu" on-tap="_toggleDrawer" on-keydown="_onKeyDown"></paper-icon-button>
+          <app-toolbar class="header__bar">
+            <paper-icon-button id="menutoggle" class="header__menuicon" icon="menu" title="Open/Close Menu" on-tap="_toggleDrawer" on-keydown="_onKeyDown"></paper-icon-button>
 
-            <iron-icon id="moon" icon="app-logo:icon"></iron-icon>
-            <h3>heyheyheyhey</h3>
+            <iron-icon id="moon" icon="app-logo:icon" class="header__logoicon"></iron-icon>
+            <h3 class="header__logotype">heyheyheyhey</h3>
           </app-toolbar>
         </app-header>
 

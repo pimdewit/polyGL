@@ -30,7 +30,8 @@
     "paper-dialog-scrollable": "^1.1.5",
     "paper-menu": "^1.2.2",
     "paper-item": "^1.2.1",
-    "tween.js": "tweenjs#^16.3.5"
+    "tween.js": "tweenjs#^16.3.5",
+    "stats.js": "*"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

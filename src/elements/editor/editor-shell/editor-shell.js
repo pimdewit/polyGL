@@ -9,20 +9,21 @@ Polymer({
 
     materialList: Object,
     material: Object,
+    environmentEffects: Object,
     paused: Boolean,
     zoomed: Boolean
   },
 
   scenePath: '/src/elements/editor/editor-scene/editor-scene.html',
 
-  attached: function() {
+  attached() {
     this._addEventListeners();
   },
 
   /**
    * Add event listeners.
    */
-  _addEventListeners: function() {
+  _addEventListeners() {
     window.addEventListener('editor-dependencies-loaded', function(event) {
       this._startScene();
     }.bind(this));
@@ -38,7 +39,7 @@ Polymer({
     }.bind(this));
   },
 
-  _populateMeta: function() {
+  _populateMeta() {
     this.$.title.innerHTML = this.material.name;
     this.$.description.innerHTML = this.material.description;
   },
@@ -46,7 +47,7 @@ Polymer({
   /**
    * Start the scene.
    */
-  _startScene: function() {
+  _startScene() {
     this.importHref(this.scenePath, function() {
       this.loading = 'dependencies-loaded';
     },
@@ -58,8 +59,14 @@ Polymer({
   /**
    * On material list loaded.
    */
-  _onMaterialListLoaded: function(response) {
+  _onMaterialListLoaded(response) {
     this.materialList = response.detail.response;
-  }
+  },
 
+  /**
+   * On material list loaded.
+   */
+  _onEnvironmentEffectsLoaded(response) {
+    this.environmentEffects = response.detail.response;
+  }
 });
